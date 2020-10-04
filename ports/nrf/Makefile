@@ -295,6 +295,19 @@ sd: $(BUILD)/firmware.hex
 	nrfjprog --program $< --sectorerase -f $(MCU_VARIANT)
 	nrfjprog --reset -f $(MCU_VARIANT)
 
+flash-wsl2: $(BUILD)/firmware.hex
+	nrfjprog.exe --program $< --sectorerase -f $(MCU_VARIANT)
+	nrfjprog.exe --erasepage $(BOOT_SETTING_ADDR) -f $(MCU_VARIANT)
+	nrfjprog.exe --memwr $(BOOT_SETTING_ADDR) --val 0x00000001 -f $(MCU_VARIANT)
+	nrfjprog.exe --reset -f $(MCU_VARIANT)
+
+sd-wsl2: $(BUILD)/firmware.hex
+	nrfjprog.exe --eraseall -f $(MCU_VARIANT)
+	nrfjprog.exe --program $(SOFTDEV_HEX) -f $(MCU_VARIANT)
+	nrfjprog.exe --program $< --sectorerase -f $(MCU_VARIANT)
+	nrfjprog.exe --reset -f $(MCU_VARIANT)
+
+
 else ifeq ($(FLASHER), pyocd)
 
 flash: $(BUILD)/firmware.hex
