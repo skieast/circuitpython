@@ -327,11 +327,14 @@ $(BUILD)/firmware.uf2: $(BUILD)/circuitpython-firmware.bin
 flash: $(BUILD)/firmware.bin
 	esptool.exe --chip esp32s2 -p $(PORT) --no-stub -b 460800 --before=default_reset --after=hard_reset write_flash $(FLASH_FLAGS) 0x0000 $^
 
-flash-windows: $(BUILD)/firmware.bin
-	esptool.exe --chip esp32s2 -p $(PORT) --no-stub -b 460800 --before=default_reset --after=hard_reset write_flash $(FLASH_FLAGS) 0x0000 $^
-
 flash-circuitpython-only: $(BUILD)/circuitpython-firmware.bin
 	esptool.py --chip esp32s2 -p $(PORT) --no-stub -b 460800 --before=default_reset --after=hard_reset write_flash $(FLASH_FLAGS) 0x10000 $^
+
+flash-wsl2: $(BUILD)/firmware.bin
+	esptool.exe --chip esp32s2 -p $(PORT) --no-stub -b 460800 --before=default_reset --after=hard_reset write_flash $(FLASH_FLAGS) 0x0000 $^
+
+flash-circuitpython-only-wsl2: $(BUILD)/circuitpython-firmware.bin
+	esptool.exe --chip esp32s2 -p $(PORT) --no-stub -b 460800 --before=default_reset --after=hard_reset write_flash $(FLASH_FLAGS) 0x10000 $^
 
 include $(TOP)/py/mkrules.mk
 

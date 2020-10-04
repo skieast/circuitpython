@@ -1,5 +1,5 @@
-USB_VID = 0x239A
-USB_PID = 0x80A8
+USB_VID = 0x303A	#Espressif VID
+USB_PID = 0xFF01	#PID from demo, test use only. Hopefully Espressif will allocate PID in future.
 USB_PRODUCT = "Cucumber M"
 USB_MANUFACTURER = "Gravitech"
 
