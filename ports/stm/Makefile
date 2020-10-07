@@ -305,6 +305,10 @@ flash: $(BUILD)/firmware.bin
 	$(ECHO) "Writing $< to the board"
 	dfu-util -a 0 --dfuse-address 0x08000000 -D $(BUILD)/firmware.bin
 
+flash-wsl2: $(BUILD)/firmware.bin
+	$(ECHO) "Writing $< to the board WSL2"
+	dfu-util.exe -a 0 --dfuse-address 0x08000000 -D $(BUILD)/firmware.bin
+
 include $(TOP)/py/mkrules.mk
 
 # Print out the value of a make variable.
