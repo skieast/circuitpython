@@ -1,9 +1,9 @@
 /*
- * This file is part of the Micro Python project, http://micropython.org/
+ * This file is part of the MicroPython project, http://micropython.org/
  *
  * The MIT License (MIT)
  *
- * Copyright (c) 2020 Lucian Copeland for Adafruit Industries
+ * Copyright (c) 2020 Jeff Epler for Adafruit Industries
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,15 +24,35 @@
  * THE SOFTWARE.
  */
 
-#ifndef MICROPY_INCLUDED_ESP32S2_PERIPHERALS_RMT_H
-#define MICROPY_INCLUDED_ESP32S2_PERIPHERALS_RMT_H
+#pragma once
 
-#include "py/mphal.h"
-#include "components/driver/include/driver/rmt.h"
-#include <stdint.h>
+#include "py/obj.h"
+#include "shared-bindings/canio/__init__.h"
+#include "shared-bindings/canio/CAN.h"
+#include "common-hal/microcontroller/Pin.h"
+#include "common-hal/canio/__init__.h"
+#include "shared-module/canio/Message.h"
 
-void esp32s2_peripherals_rmt_reset(void);
-rmt_channel_t esp32s2_peripherals_find_and_reserve_rmt(void);
-void esp32s2_peripherals_free_rmt(rmt_channel_t chan);
+#include "stm32f4xx_hal.h"
+#include "stm32f4xx_hal_can.h"
 
-#endif
+#define FILTER_BANK_COUNT (28)
+
+typedef struct canio_can_obj {
+    mp_obj_base_t base;
+    CAN_HandleTypeDef handle;
+    CAN_TypeDef *filter_hw;
+    int baudrate;
+    const mcu_pin_obj_t *rx_pin;
+    const mcu_pin_obj_t *tx_pin;
+    bool loopback:1;
+    bool silent:1;
+    bool auto_restart:1;
+    bool fifo0_in_use:1;
+    bool fifo1_in_use:1;
+    uint8_t periph_index:2;
+    uint8_t cancel_mailbox;
+    uint8_t start_filter_bank;
+    uint8_t end_filter_bank;
+    long filter_in_use; // bitmask for the 28 filter banks
+} canio_can_obj_t;

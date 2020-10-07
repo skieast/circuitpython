@@ -1,9 +1,9 @@
 /*
- * This file is part of the Micro Python project, http://micropython.org/
+ * This file is part of the MicroPython project, http://micropython.org/
  *
  * The MIT License (MIT)
  *
- * Copyright (c) 2020 Lucian Copeland for Adafruit Industries
+ * Copyright (c) 2020 Jeff Epler for Adafruit Industries
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,15 +24,4 @@
  * THE SOFTWARE.
  */
 
-#ifndef MICROPY_INCLUDED_ESP32S2_PERIPHERALS_RMT_H
-#define MICROPY_INCLUDED_ESP32S2_PERIPHERALS_RMT_H
-
-#include "py/mphal.h"
-#include "components/driver/include/driver/rmt.h"
-#include <stdint.h>
-
-void esp32s2_peripherals_rmt_reset(void);
-rmt_channel_t esp32s2_peripherals_find_and_reserve_rmt(void);
-void esp32s2_peripherals_free_rmt(rmt_channel_t chan);
-
-#endif
+#pragma once
