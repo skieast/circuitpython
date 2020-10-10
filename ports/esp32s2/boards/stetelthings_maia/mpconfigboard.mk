@@ -2,7 +2,7 @@ USB_VID = 0x303A	#Espressif VID
 USB_PID = 0x8820	#PID from demo, test use only. Hopefully Espressif will allocate PID in future. 
 USB_PRODUCT = "STETELTHINGS_MAIA"
 USB_MANUFACTURER = "Espressif Systems"
-USB_DEVICES = "CDC,MSC,HID"
+# USB_DEVICES = "CDC,MSC,HID"
 
 INTERNAL_FLASH_FILESYSTEM = 1
 LONGINT_IMPL = MPZ
