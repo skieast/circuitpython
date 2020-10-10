@@ -3,8 +3,8 @@
  *
  * The MIT License (MIT)
  *
- * Copyright (c) 2019 Dan Halbert for Adafruit Industries
- * Copyright (c) 2018 Artur Pacholec
+ * Copyright (c) 2019 Scott Shawcroft for Adafruit Industries
+ * Copyright (c) 2019 Artur Pacholec
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -25,38 +25,28 @@
  * THE SOFTWARE.
  */
 
-#ifndef MICROPY_INCLUDED_ESP32S2_COMMON_HAL_WIFI_SCANNEDNETWORKS_H
-#define MICROPY_INCLUDED_ESP32S2_COMMON_HAL_WIFI_SCANNEDNETWORKS_H
+#include "boards/board.h"
+#include "mpconfigboard.h"
+#include "shared-bindings/microcontroller/Pin.h"
 
-#include <stdint.h>
+void board_init(void) {
+    // SWD Pins
+    common_hal_never_reset_pin(&pin_GPIO_AD_13);//SWDIO
+    common_hal_never_reset_pin(&pin_GPIO_AD_12);//SWCLK
 
-#include "py/obj.h"
+    // FLEX flash
+    common_hal_never_reset_pin(&pin_GPIO_SD_12);
+    common_hal_never_reset_pin(&pin_GPIO_SD_11);
+    common_hal_never_reset_pin(&pin_GPIO_SD_10);
+    common_hal_never_reset_pin(&pin_GPIO_SD_09);
+    common_hal_never_reset_pin(&pin_GPIO_SD_08);
+    common_hal_never_reset_pin(&pin_GPIO_SD_07);
+    common_hal_never_reset_pin(&pin_GPIO_SD_06);
+}
 
-#include "FreeRTOS.h"
-#include "freertos/event_groups.h"
+bool board_requests_safe_mode(void) {
+    return false;
+}
 
-#include "components/esp_wifi/include/esp_wifi_types.h"
-
-typedef struct {
-    mp_obj_base_t base;
-    uint8_t current_channel_index;
-    EventGroupHandle_t radio_event_group;
-
-    // Results from the last channel scan
-    wifi_ap_record_t* results;
-    uint16_t current_result;
-    uint16_t total_results;
-    uint16_t max_results;
-
-    // Limits on what channels to scan.
-    uint8_t start_channel;
-    uint8_t end_channel; // Inclusive
-
-    bool done;
-    bool scanning;
-} wifi_scannednetworks_obj_t;
-
-void wifi_scannednetworks_scan_next_channel(wifi_scannednetworks_obj_t *self);
-void wifi_scannednetworks_deinit(wifi_scannednetworks_obj_t *self);
-
-#endif // MICROPY_INCLUDED_ESP32S2_COMMON_HAL_WIFI_SCANNEDNETWORKS_H
+void reset_board(void) {
+}
