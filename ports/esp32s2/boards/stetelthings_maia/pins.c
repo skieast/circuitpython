@@ -49,7 +49,7 @@ STATIC const mp_rom_map_elem_t board_global_dict_table[] = {
     { MP_ROM_QSTR(MP_QSTR_SPI), MP_ROM_PTR(&board_spi_obj) },
     { MP_ROM_QSTR(MP_QSTR_UART), MP_ROM_PTR(&board_uart_obj) },
 
-   
+
 
       //RGB Control
     { MP_ROM_QSTR(MP_QSTR_RGB_R), MP_ROM_PTR(&pin_GPIO8) },
@@ -59,7 +59,7 @@ STATIC const mp_rom_map_elem_t board_global_dict_table[] = {
       //User Button
     { MP_ROM_QSTR(MP_QSTR_USER_BUTTON), MP_ROM_PTR(&pin_GPIO11) },
 
-      //Peripheral Power control 
+      //Peripheral Power control
     { MP_ROM_QSTR(MP_QSTR_POWER), MP_ROM_PTR(&pin_GPIO12) },
 
       //Charge Control

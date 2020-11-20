@@ -1,5 +1,5 @@
 USB_VID = 0x303A	#Espressif VID
-USB_PID = 0x0002	#PID from demo, test use only. Hopefully Espressif will allocate PID in future. 
+USB_PID = 0x0002	#PID from demo, test use only. Hopefully Espressif will allocate PID in future.
 USB_PRODUCT = "TTGO_T8"
 USB_MANUFACTURER = "Espressif Systems"
 USB_DEVICES = "CDC,MSC,HID"
@@ -14,4 +14,3 @@ CFLAGS += -DCFG_TUD_TASK_QUEUE_SZ=32
 CIRCUITPY_ESP_FLASH_MODE=qio
 CIRCUITPY_ESP_FLASH_FREQ=40m
 CIRCUITPY_ESP_FLASH_SIZE=4MB
-
