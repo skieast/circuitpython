@@ -140,6 +140,7 @@ void common_hal_wifi_init(void) {
 }
 
 void wifi_reset(void) {
+    ESP_EARLY_LOGW(TAG, "reset");
     if (!wifi_inited) {
         return;
     }
