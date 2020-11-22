@@ -74,8 +74,14 @@ static void event_handler(void* arg, esp_event_base_t event_base,
 
             // Cases to handle later.
             // case WIFI_EVENT_STA_START:
+                ESP_EARLY_LOGW(TAG, "start");
+                break;
             // case WIFI_EVENT_STA_STOP:
+                ESP_EARLY_LOGW(TAG, "stop");
+                break;
             // case WIFI_EVENT_STA_AUTHMODE_CHANGE:
+                ESP_EARLY_LOGW(TAG, "authmode change");
+                break;
             default:
                 break;
         }
@@ -95,6 +101,7 @@ void common_hal_wifi_init(void) {
     common_hal_wifi_radio_obj.base.type = &wifi_radio_type;
 
     if (!wifi_ever_inited) {
+        ESP_EARLY_LOGW(TAG, "init wifi create event loop");
         ESP_ERROR_CHECK(esp_netif_init());
         ESP_ERROR_CHECK(esp_event_loop_create_default());
     }
