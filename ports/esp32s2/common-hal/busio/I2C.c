@@ -34,6 +34,10 @@
 #include "shared-bindings/microcontroller/Pin.h"
 #include "supervisor/shared/translate.h"
 
+#include "components/log/include/esp_log.h"
+
+static const char* TAG = "i2c";
+
 typedef enum {
     STATUS_FREE = 0,
     STATUS_IN_USE,
@@ -43,20 +47,24 @@ typedef enum {
 static i2c_status_t i2c_status[I2C_NUM_MAX];
 
 void never_reset_i2c(i2c_port_t num) {
+    ESP_EARLY_LOGW(TAG, "never reset: %d",num);
     i2c_status[num] = STATUS_NEVER_RESET;
 }
 
 void i2c_reset(void) {
+    ESP_EARLY_LOGW(TAG, "reset");
     for (i2c_port_t num = 0; num < I2C_NUM_MAX; num++) {
         if (i2c_status[num] == STATUS_IN_USE) {
-            i2c_driver_delete(num);
+            // i2c_driver_delete(num);
             i2c_status[num] = STATUS_FREE;
         }
     }
 }
 
+static bool i2c_inited;
 void common_hal_busio_i2c_construct(busio_i2c_obj_t *self,
         const mcu_pin_obj_t* scl, const mcu_pin_obj_t* sda, uint32_t frequency, uint32_t timeout) {
+    ESP_EARLY_LOGW(TAG, "construct entry");
     // Pins 45 and 46 are "strapping" pins that impact start up behavior. They usually need to
     // be pulled-down so pulling them up for I2C is a bad idea. To make this hard, we don't
     // support I2C on these pins.
@@ -90,10 +98,11 @@ void common_hal_busio_i2c_construct(busio_i2c_obj_t *self,
 #endif
 
 
-    if (xSemaphoreCreateBinaryStatic(&self->semaphore) != &self->semaphore) {
+    if (!(self->semaphoreHandle = xSemaphoreCreateBinaryStatic(&self->semaphore))) {
         mp_raise_RuntimeError(translate("Unable to create lock"));
     }
-    xSemaphoreGive(&self->semaphore);
+    ESP_EARLY_LOGW(TAG, "construct init");
+    xSemaphoreGive(self->semaphoreHandle);
     self->sda_pin = sda;
     self->scl_pin = scl;
     self->i2c_num = I2C_NUM_MAX;
@@ -121,13 +130,16 @@ void common_hal_busio_i2c_construct(busio_i2c_obj_t *self,
     if (result != ESP_OK) {
         mp_raise_ValueError(translate("Invalid pins"));
     }
-    result = i2c_driver_install(self->i2c_num,
-                                I2C_MODE_MASTER,
-                                0,
-                                0,
-                                0);
-    if (result != ESP_OK) {
-        mp_raise_OSError(MP_EIO);
+    if (!i2c_inited) {
+        result = i2c_driver_install(self->i2c_num,
+                                    I2C_MODE_MASTER,
+                                    0,
+                                    0,
+                                    0);
+        if (result != ESP_OK) {
+            mp_raise_OSError(MP_EIO);
+        }
+        i2c_inited = true;
     }
 
     claim_pin(sda);
@@ -135,15 +147,18 @@ void common_hal_busio_i2c_construct(busio_i2c_obj_t *self,
 }
 
 bool common_hal_busio_i2c_deinited(busio_i2c_obj_t *self) {
+    ESP_EARLY_LOGW(TAG, "deinited");
     return self->sda_pin == NULL;
 }
 
 void common_hal_busio_i2c_deinit(busio_i2c_obj_t *self) {
     if (common_hal_busio_i2c_deinited(self)) {
+        ESP_EARLY_LOGW(TAG, "deinit sda_pin is null");
         return;
     }
-
-    i2c_driver_delete(self->i2c_num);
+    ESP_EARLY_LOGW(TAG, "deinit");
+    vSemaphoreDelete(self->semaphoreHandle);
+    // i2c_driver_delete(self->i2c_num);
     i2c_status[self->i2c_num] = STATUS_FREE;
 
     common_hal_reset_pin(self->sda_pin);
@@ -166,7 +181,7 @@ bool common_hal_busio_i2c_try_lock(busio_i2c_obj_t *self) {
     if (self->has_lock) {
         return false;
     }
-    self->has_lock = xSemaphoreTake(&self->semaphore, 0) == pdTRUE;
+    self->has_lock = xSemaphoreTake(self->semaphoreHandle, 0) == pdTRUE;
     return self->has_lock;
 }
 
@@ -175,7 +190,7 @@ bool common_hal_busio_i2c_has_lock(busio_i2c_obj_t *self) {
 }
 
 void common_hal_busio_i2c_unlock(busio_i2c_obj_t *self) {
-    xSemaphoreGive(&self->semaphore);
+    xSemaphoreGive(self->semaphoreHandle);
     self->has_lock = false;
 }
 
@@ -221,6 +236,8 @@ uint8_t common_hal_busio_i2c_read(busio_i2c_obj_t *self, uint16_t addr,
 }
 
 void common_hal_busio_i2c_never_reset(busio_i2c_obj_t *self) {
+    ESP_EARLY_LOGW(TAG, "never_reset");
+
     never_reset_i2c(self->i2c_num);
 
     common_hal_never_reset_pin(self->scl_pin);
