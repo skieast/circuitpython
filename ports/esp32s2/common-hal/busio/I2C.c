@@ -141,7 +141,6 @@ void common_hal_busio_i2c_deinit(busio_i2c_obj_t *self) {
     if (common_hal_busio_i2c_deinited(self)) {
         return;
     }
-    vSemaphoreDelete(self->semaphoreHandle);
     i2c_driver_delete(self->i2c_num);
     i2c_status[self->i2c_num] = STATUS_FREE;
 
@@ -174,7 +173,7 @@ bool common_hal_busio_i2c_has_lock(busio_i2c_obj_t *self) {
 }
 
 void common_hal_busio_i2c_unlock(busio_i2c_obj_t *self) {
-    xSemaphoreGive(&self->semaphoreHandle);
+    xSemaphoreGive(self->semaphoreHandle);
     self->has_lock = false;
 }
 
