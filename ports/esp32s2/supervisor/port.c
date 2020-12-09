@@ -41,8 +41,10 @@
 #include "common-hal/busio/I2C.h"
 #include "common-hal/busio/SPI.h"
 #include "common-hal/busio/UART.h"
+#include "common-hal/ps2io/Ps2.h"
 #include "common-hal/pulseio/PulseIn.h"
 #include "common-hal/pwmio/PWMOut.h"
+#include "common-hal/touchio/TouchIn.h"
 #include "common-hal/watchdog/WatchDogTimer.h"
 #include "common-hal/wifi/__init__.h"
 #include "supervisor/memory.h"
@@ -52,8 +54,11 @@
 #include "peripherals/rmt.h"
 #include "peripherals/pcnt.h"
 #include "peripherals/timer.h"
+#include "components/esp_rom/include/esp_rom_uart.h"
 #include "components/heap/include/esp_heap_caps.h"
+#include "components/xtensa/include/esp_debug_helpers.h"
 #include "components/soc/soc/esp32s2/include/soc/cache_memory.h"
+#include "components/soc/soc/esp32s2/include/soc/rtc_cntl_reg.h"
 
 #define HEAP_SIZE (48 * 1024)
 
@@ -75,6 +80,11 @@ safe_mode_t port_init(void) {
     args.dispatch_method = ESP_TIMER_TASK;
     args.name = "CircuitPython Tick";
     esp_timer_create(&args, &_tick_timer);
+
+    #ifdef DEBUG
+    // Send the ROM output out of the UART. This includes early logs.
+    esp_rom_install_channel_putc(1, esp_rom_uart_putc);
+    #endif
 
     heap = NULL;
     never_reset_module_internal_pins();
@@ -105,6 +115,19 @@ void reset_port(void) {
     analogout_reset();
 #endif
 
+#if CIRCUITPY_PS2IO
+    ps2_reset();
+#endif
+
+#if CIRCUITPY_PULSEIO
+    esp32s2_peripherals_rmt_reset();
+    pulsein_reset();
+#endif
+
+#if CIRCUITPY_PWMIO
+    pwmout_reset();
+#endif
+
 #if CIRCUITPY_BUSIO
     i2c_reset();
     spi_reset();
@@ -132,6 +155,10 @@ void reset_port(void) {
     rtc_reset();
 #endif
 
+#if CIRCUITPY_TOUCHIO_USE_NATIVE
+    touchin_reset();
+#endif
+
 #if CIRCUITPY_WATCHDOG
     watchdog_reset();
 #endif
@@ -146,6 +173,7 @@ void reset_to_bootloader(void) {
 }
 
 void reset_cpu(void) {
+    esp_backtrace_print(100);
     esp_restart();
 }
 
@@ -179,20 +207,17 @@ uint32_t *port_stack_get_top(void) {
     return port_stack_get_limit() + ESP_TASK_MAIN_STACK / (sizeof(uint32_t) / sizeof(StackType_t));
 }
 
-supervisor_allocation _fixed_stack;
-
-supervisor_allocation* port_fixed_stack(void) {
-    _fixed_stack.ptr = port_stack_get_limit();
-    _fixed_stack.length = (port_stack_get_top() - port_stack_get_limit()) * sizeof(uint32_t);
-    return &_fixed_stack;
+bool port_has_fixed_stack(void) {
+    return true;
 }
 
 // Place the word to save just after our BSS section that gets blanked.
 void port_set_saved_word(uint32_t value) {
+    REG_WRITE(RTC_CNTL_STORE0_REG, value);
 }
 
 uint32_t port_get_saved_word(void) {
-    return 0;
+    return REG_READ(RTC_CNTL_STORE0_REG);
 }
 
 uint64_t port_get_raw_ticks(uint8_t* subticks) {
