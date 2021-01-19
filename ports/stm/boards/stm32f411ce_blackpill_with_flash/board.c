@@ -3,7 +3,7 @@
  *
  * The MIT License (MIT)
  *
- * Copyright (c) 2020 microDev
+ * Copyright (c) 2017 Scott Shawcroft for Adafruit Industries
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,35 +24,16 @@
  * THE SOFTWARE.
  */
 
-#include "components/soc/include/hal/gpio_types.h"
-// above include fixes build error in idf@v4.2
-#include "peripherals/touch.h"
+#include "supervisor/board.h"
+#include "mpconfigboard.h"
 
-static bool touch_inited = false;
-static bool touch_never_reset = false;
-
-void peripherals_touch_reset(void) {
-    if (touch_inited && !touch_never_reset) {
-        touch_pad_deinit();
-        touch_inited = false;
-    }
+void board_init(void) {
 }
 
-void peripherals_touch_never_reset(const bool enable) {
-    touch_never_reset = enable;
+bool board_requests_safe_mode(void) {
+    return false;
 }
 
-void peripherals_touch_init(const touch_pad_t touchpad) {
-    if (!touch_inited) {
-        touch_pad_init();
-        touch_pad_set_fsm_mode(TOUCH_FSM_MODE_TIMER);
-    }
-    // touch_pad_config() must be done before touch_pad_fsm_start() the first time.
-    // Otherwise the calibration is wrong and we get maximum raw values if there is
-    // a trace of any significant length on the pin.
-    touch_pad_config(touchpad);
-    if (!touch_inited) {
-        touch_pad_fsm_start();
-        touch_inited = true;
-    }
+void reset_board(void) {
+
 }

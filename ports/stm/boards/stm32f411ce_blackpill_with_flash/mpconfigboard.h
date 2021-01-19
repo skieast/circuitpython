@@ -3,7 +3,7 @@
  *
  * The MIT License (MIT)
  *
- * Copyright (c) 2020 microDev
+ * Copyright (c) 2019 Lucian Copeland for Adafruit Industries
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,35 +24,29 @@
  * THE SOFTWARE.
  */
 
-#include "components/soc/include/hal/gpio_types.h"
-// above include fixes build error in idf@v4.2
-#include "peripherals/touch.h"
+//Micropython setup
 
-static bool touch_inited = false;
-static bool touch_never_reset = false;
+#define MICROPY_HW_BOARD_NAME       "stm32f411ce-blackpill-with-flash"
+#define MICROPY_HW_MCU_NAME         "STM32F411CE"
 
-void peripherals_touch_reset(void) {
-    if (touch_inited && !touch_never_reset) {
-        touch_pad_deinit();
-        touch_inited = false;
-    }
-}
+#define FLASH_SIZE                  (0x80000)
+#define FLASH_PAGE_SIZE             (0x4000)
 
-void peripherals_touch_never_reset(const bool enable) {
-    touch_never_reset = enable;
-}
+#define HSE_VALUE ((uint32_t)25000000)
+#define BOARD_NO_VBUS_SENSE (1)
+#define BOARD_HAS_LOW_SPEED_CRYSTAL (0)
 
-void peripherals_touch_init(const touch_pad_t touchpad) {
-    if (!touch_inited) {
-        touch_pad_init();
-        touch_pad_set_fsm_mode(TOUCH_FSM_MODE_TIMER);
-    }
-    // touch_pad_config() must be done before touch_pad_fsm_start() the first time.
-    // Otherwise the calibration is wrong and we get maximum raw values if there is
-    // a trace of any significant length on the pin.
-    touch_pad_config(touchpad);
-    if (!touch_inited) {
-        touch_pad_fsm_start();
-        touch_inited = true;
-    }
-}
+// On-board flash
+#define SPI_FLASH_MOSI_PIN          (&pin_PA07)
+#define SPI_FLASH_MISO_PIN          (&pin_PA06)
+#define SPI_FLASH_SCK_PIN           (&pin_PA05)
+#define SPI_FLASH_CS_PIN            (&pin_PA04)
+
+#define DEFAULT_I2C_BUS_SCL (&pin_PB06)
+#define DEFAULT_I2C_BUS_SDA (&pin_PB07)
+
+#define CIRCUITPY_AUTORELOAD_DELAY_MS (500)
+
+#define BOARD_FLASH_SIZE (FLASH_SIZE - 0x2000 - 0xC000)
+
+#define AUTORESET_DELAY_MS (500)
