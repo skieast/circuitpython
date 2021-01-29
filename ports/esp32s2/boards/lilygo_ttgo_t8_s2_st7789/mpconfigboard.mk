@@ -1,6 +1,6 @@
 USB_VID = 0x303A	#Espressif VID
-USB_PID = 0x0002	#PID from demo, test use only. Hopefully Espressif will allocate PID in future.
-USB_PRODUCT = "TTGO_T8"
+USB_PID = 0x0007	#Espressif allocated PID
+USB_PRODUCT = "TTGO_T8_S2_ST7789"
 USB_MANUFACTURER = "Espressif Systems"
 USB_DEVICES = "CDC,MSC,HID"
 
