@@ -33,21 +33,11 @@ void board_init(void) {
     common_hal_never_reset_pin(&pin_GPIO19);
     common_hal_never_reset_pin(&pin_GPIO20);
 
-      // Debug UART
+    // Debug UART
 #ifdef DEBUG
     common_hal_never_reset_pin(&pin_GPIO43);
     common_hal_never_reset_pin(&pin_GPIO44);
 #endif /* DEBUG */
-
-/*   // SPI Flash and RAM
-    common_hal_never_reset_pin(&pin_GPIO26);
-    common_hal_never_reset_pin(&pin_GPIO27);
-    common_hal_never_reset_pin(&pin_GPIO28);
-    common_hal_never_reset_pin(&pin_GPIO29);
-    common_hal_never_reset_pin(&pin_GPIO30);
-    common_hal_never_reset_pin(&pin_GPIO31);
-    common_hal_never_reset_pin(&pin_GPIO32);
-*/
 }
 
 bool board_requests_safe_mode(void) {
