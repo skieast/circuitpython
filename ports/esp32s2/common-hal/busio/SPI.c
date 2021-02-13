@@ -179,21 +179,20 @@ void common_hal_busio_spi_construct(busio_spi_obj_t *self,
     intr_handle[host_id] = self->interrupt;
     spi_bus_lock_set_bg_control(spi_bus_get_attr(host_id)->lock, spi_bus_intr_enable, spi_bus_intr_disable, self);
 
-    spi_hal_context_t* hal = &self->hal_context;
-
     // spi_hal_init clears the given hal context so set everything after.
-    spi_hal_init(hal, host_id);
-
+    spi_hal_init(self->hal_context, host_id, &self->hal_context->dma_config);
+    
+    self->hal_dev->sio = 0;
+    self->hal_dev->half_duplex = 0;
+    // self->hal_dev->tx_lsbfirst = 0;
+    // self->hal_dev->rx_lsbfirst = 0;
+    self->hal_dev->no_compensate = 1;
+    
     // We don't use native CS.
     // hal->cs_setup = 0;
     // hal->cs_hold = 0;
     // hal->cs_pin_id = 0;
-
-    hal->sio = 0;
-    hal->half_duplex = 0;
-    // hal->tx_lsbfirst = 0;
-    // hal->rx_lsbfirst = 0;
-    hal->no_compensate = 1;
+    
     // Ignore CS bits
 
     // We don't use cmd, addr or dummy bits.
@@ -211,7 +210,7 @@ void common_hal_busio_spi_construct(busio_spi_obj_t *self,
         claim_pin(self->MISO_pin);
     }
 
-    hal->io_mode = SPI_LL_IO_MODE_NORMAL;
+    self->hal_trans->io_mode = SPI_LL_IO_MODE_NORMAL;
 
     common_hal_busio_spi_configure(self, 250000, 0, 0, 8);
 }
@@ -257,30 +256,25 @@ void common_hal_busio_spi_deinit(busio_spi_obj_t *self) {
 
 bool common_hal_busio_spi_configure(busio_spi_obj_t *self,
         uint32_t baudrate, uint8_t polarity, uint8_t phase, uint8_t bits) {
-    if (baudrate == self->target_frequency &&
+    if ((int)baudrate == self->target_frequency &&
         polarity == self->polarity &&
         phase == self->phase &&
         bits == self->bits) {
         return true;
     }
-    self->hal_context.mode = polarity << 1 | phase;
+    self->hal_dev->mode = polarity << 1 | phase;
     self->polarity = polarity;
     self->phase = phase;
     self->bits = bits;
     self->target_frequency = baudrate;
-    self->hal_context.timing_conf = &self->timing_conf;
-    esp_err_t result =  spi_hal_get_clock_conf(&self->hal_context,
-                                               self->target_frequency,
-                                               128 /* duty_cycle */,
-                                               self->connected_through_gpio,
-                                               0 /* input_delay_ns */,
-                                               &self->real_frequency,
-                                               &self->timing_conf);
+    esp_err_t result =  spi_hal_cal_clock_conf(self->hal_timing,
+                                               &self->target_frequency,
+                                               &self->hal_dev->timing_conf);
     if (result != ESP_OK) {
         return false;
     }
 
-    spi_hal_setup_device(&self->hal_context);
+    spi_hal_setup_device(self->hal_context, self->hal_dev);
     return true;
 }
 
@@ -339,31 +333,30 @@ bool common_hal_busio_spi_transfer(busio_spi_obj_t *self, const uint8_t *data_ou
         mp_raise_ValueError(translate("No MISO Pin"));
     }
 
-    spi_hal_context_t* hal = &self->hal_context;
-    hal->send_buffer = NULL;
-    hal->rcv_buffer = NULL;
+    self->hal_trans->send_buffer = NULL;
+    self->hal_trans->rcv_buffer = NULL;
+    
     // Reset timing_conf in case we've moved since the last time we used it.
-    hal->timing_conf = &self->timing_conf;
     lldesc_t tx_dma __attribute__((aligned(16)));
     lldesc_t rx_dma __attribute__((aligned(16)));
-    hal->dmadesc_tx = &tx_dma;
-    hal->dmadesc_rx = &rx_dma;
-    hal->dmadesc_n = 1;
+    self->hal_context->dma_config.dmadesc_tx = &tx_dma;
+    self->hal_context->dma_config.dmadesc_rx = &rx_dma;
+    self->hal_context->dma_config.dmadesc_n = 1;
 
     size_t burst_length;
     // If both of the incoming pointers are DMA capable then use DMA. Otherwise, do
     // bursts the size of the SPI data buffer without DMA.
     if ((data_out == NULL || esp_ptr_dma_capable(data_out)) &&
         (data_in == NULL || esp_ptr_dma_capable(data_out))) {
-        hal->dma_enabled = 1;
+        self->hal_context->dma_enabled = 1;
         burst_length = LLDESC_MAX_NUM_PER_DESC;
     } else {
-        hal->dma_enabled = 0;
-        burst_length = sizeof(hal->hw->data_buf);
+        self->hal_context->dma_enabled = 0;
+        burst_length = sizeof(self->hal_context->hw->data_buf);
         // When switching to non-DMA, we need to make sure DMA is off. Otherwise,
         // the S2 will transmit zeroes instead of our data.
-        hal->hw->dma_out_link.dma_tx_ena = 0;
-        hal->hw->dma_out_link.stop = 1;
+        self->hal_context->hw->dma_out_link.dma_tx_ena = 0;
+        self->hal_context->hw->dma_out_link.stop = 1;
     }
 
     // This rounds up.
@@ -374,33 +367,33 @@ bool common_hal_busio_spi_transfer(busio_spi_obj_t *self, const uint8_t *data_ou
         if (this_length > burst_length) {
             this_length = burst_length;
         }
-        hal->tx_bitlen = this_length * self->bits;
-        hal->rx_bitlen = this_length * self->bits;
+        self->hal_trans->tx_bitlen = this_length * self->bits;
+        self->hal_trans->rx_bitlen = this_length * self->bits;
         if (data_out != NULL) {
-            hal->send_buffer = (uint8_t*) data_out + offset;
+            self->hal_trans->send_buffer = (uint8_t*) data_out + offset;
         }
         if (data_in != NULL) {
-            hal->rcv_buffer = data_in + offset;
+            self->hal_trans->rcv_buffer = data_in + offset;
         }
 
-        spi_hal_setup_trans(hal);
-        spi_hal_prepare_data(hal);
-        spi_hal_user_start(hal);
+        spi_hal_setup_trans(self->hal_context, self->hal_dev, self->hal_trans);
+        spi_hal_prepare_data(self->hal_context, self->hal_dev, self->hal_trans);
+        spi_hal_user_start(self->hal_context);
         // TODO: Switch to waiting on a lock that is given by an interrupt.
-        while (!spi_hal_usr_is_done(hal)) {
+        while (!spi_hal_usr_is_done(self->hal_context)) {
             RUN_BACKGROUND_TASKS;
         }
-        spi_hal_fetch_result(hal);
+        spi_hal_fetch_result(self->hal_context);
     }
-    hal->dmadesc_tx = NULL;
-    hal->dmadesc_rx = NULL;
-    hal->dmadesc_n = 0;
+    self->hal_context->dma_config.dmadesc_tx = NULL;
+    self->hal_context->dma_config.dmadesc_rx = NULL;
+    self->hal_context->dma_config.dmadesc_n = 0;
 
     return true;
 }
 
 uint32_t common_hal_busio_spi_get_frequency(busio_spi_obj_t* self) {
-    return self->real_frequency;
+    return self->target_frequency;
 }
 
 uint8_t common_hal_busio_spi_get_phase(busio_spi_obj_t* self) {

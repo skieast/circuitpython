@@ -30,25 +30,32 @@
 #include "common-hal/microcontroller/Pin.h"
 
 #include "components/driver/include/driver/spi_common_internal.h"
-#include "components/soc/include/hal/spi_hal.h"
-#include "components/soc/include/hal/spi_types.h"
+#include "components/hal/include/hal/spi_hal.h"
+#include "components/hal/include/hal/spi_types.h"
 #include "py/obj.h"
 
 typedef struct {
     mp_obj_base_t base;
+    
     const mcu_pin_obj_t* clock_pin;
     const mcu_pin_obj_t* MOSI_pin;
     const mcu_pin_obj_t* MISO_pin;
+    
     spi_host_device_t host_id;
     spi_bus_lock_dev_handle_t lock;
-    spi_hal_context_t hal_context;
-    spi_hal_timing_conf_t timing_conf;
+    
+    spi_hal_context_t* hal_context;
+    spi_hal_dev_config_t* hal_dev;
+    spi_hal_trans_config_t* hal_trans;
+    spi_hal_timing_param_t* hal_timing;   
+    
     intr_handle_t interrupt;
-    uint32_t target_frequency;
-    int32_t real_frequency;
-    uint8_t polarity;
-    uint8_t phase;
+    
     uint8_t bits;
+    uint8_t phase;
+    uint8_t polarity;
+    int target_frequency;
+    
     bool has_lock;
     bool connected_through_gpio;
 } busio_spi_obj_t;

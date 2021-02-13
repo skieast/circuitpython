@@ -24,7 +24,7 @@
  * THE SOFTWARE.
  */
 
-#include "components/soc/include/hal/gpio_types.h"
+#include "components/hal/include/hal/gpio_types.h"
 // above include fixes build error in idf@v4.2
 #include "peripherals/touch.h"
 
