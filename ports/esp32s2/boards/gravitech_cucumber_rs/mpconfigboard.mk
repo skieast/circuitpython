@@ -1,6 +1,6 @@
 USB_VID = 0x303A	#Espressif VID
-USB_PID = 0xFF04	#PID from demo, test use only. Hopefully Espressif will allocate PID in future.
-USB_PRODUCT = "Cucumber R"
+USB_PID = 0x800D	#PID from Espressif for RS and RIS board.
+USB_PRODUCT = "Cucumber RS"
 USB_MANUFACTURER = "Gravitech"
 
 INTERNAL_FLASH_FILESYSTEM = 1
@@ -15,3 +15,4 @@ CIRCUITPY_ESP_FLASH_FREQ=40m
 CIRCUITPY_ESP_FLASH_SIZE=4MB
 
 CIRCUITPY_MODULE=wrover
+CIRCUITPY_REQUIRE_I2C_PULLUPS = 0	#Internal i2c sensor bus on xxS models has no pullups.
