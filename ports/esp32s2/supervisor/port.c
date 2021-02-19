@@ -118,7 +118,8 @@ safe_mode_t port_init(void) {
     common_hal_never_reset_pin(&pin_GPIO44);
     #endif
 
-    #if defined(DEBUG) || defined(ENABLE_JTAG)
+    // #if defined(DEBUG) || defined(ENABLE_JTAG)
+    #if defined(ENABLE_JTAG)
     // JTAG
     common_hal_never_reset_pin(&pin_GPIO39);
     common_hal_never_reset_pin(&pin_GPIO40);

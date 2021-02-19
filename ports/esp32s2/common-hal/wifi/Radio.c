@@ -172,7 +172,7 @@ wifi_radio_error_t common_hal_wifi_radio_connect(wifi_radio_obj_t *self, uint8_t
     } else {
         config->sta.scan_method = WIFI_FAST_SCAN;
     }
-    esp_wifi_set_config(ESP_IF_WIFI_STA, config);
+    esp_wifi_set_config(WIFI_IF_STA, config);
     self->starting_retries = 5;
     self->retries_left = 5;
     esp_wifi_connect();

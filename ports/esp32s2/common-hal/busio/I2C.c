@@ -34,6 +34,10 @@
 #include "shared-bindings/microcontroller/Pin.h"
 #include "supervisor/shared/translate.h"
 
+#ifdef DEBUG
+    #include "components/log/include/esp_log.h"
+    static const char* TAG = "i2c";
+#endif
 typedef enum {
     STATUS_FREE = 0,
     STATUS_IN_USE,
@@ -47,6 +51,9 @@ void never_reset_i2c(i2c_port_t num) {
 }
 
 void i2c_reset(void) {
+    #ifdef DEBUG
+        ESP_LOGW(TAG, "reset");
+    #endif
     for (i2c_port_t num = 0; num < I2C_NUM_MAX; num++) {
         if (i2c_status[num] == STATUS_IN_USE) {
             i2c_status[num] = STATUS_FREE;
@@ -57,6 +64,10 @@ static bool i2c_inited[I2C_NUM_MAX];
 
 void common_hal_busio_i2c_construct(busio_i2c_obj_t *self,
         const mcu_pin_obj_t* scl, const mcu_pin_obj_t* sda, uint32_t frequency, uint32_t timeout) {
+    #ifdef DEBUG
+        ESP_LOGW(TAG, "construct");
+    #endif
+
     // Pins 45 and 46 are "strapping" pins that impact start up behavior. They usually need to
     // be pulled-down so pulling them up for I2C is a bad idea. To make this hard, we don't
     // support I2C on these pins.
@@ -107,24 +118,10 @@ void common_hal_busio_i2c_construct(busio_i2c_obj_t *self,
         mp_raise_ValueError(translate("All I2C peripherals are in use"));
     }
     i2c_status[self->i2c_num] = STATUS_IN_USE;
-    i2c_config_t i2c_conf = {
-        .mode = I2C_MODE_MASTER,
-        .sda_io_num = self->sda_pin->number,
-        .scl_io_num = self->scl_pin->number,
-        .sda_pullup_en = GPIO_PULLUP_DISABLE,  /*!< Internal GPIO pull mode for I2C sda signal*/
-        .scl_pullup_en = GPIO_PULLUP_DISABLE,  /*!< Internal GPIO pull mode for I2C scl signal*/
 
-        .master = {
-            .clk_speed = frequency,
-        }
-    };
-    esp_err_t result = i2c_param_config(self->i2c_num, &i2c_conf);
-    if (result != ESP_OK) {
-        mp_raise_ValueError(translate("Invalid pins"));
-    }
+    esp_err_t result;
 
-
-    if (!i2c_inited[self->i2c_num]) {
+    // if (!i2c_inited[self->i2c_num]) {
         result = i2c_driver_install(self->i2c_num,
                                     I2C_MODE_MASTER,
                                     0,
@@ -135,6 +132,21 @@ void common_hal_busio_i2c_construct(busio_i2c_obj_t *self,
         }
         i2c_inited[self->i2c_num] = true;
 
+    // }
+
+    i2c_config_t i2c_conf = {
+        .mode = I2C_MODE_MASTER,
+        .sda_io_num = self->sda_pin->number,
+        .scl_io_num = self->scl_pin->number,
+        .sda_pullup_en = GPIO_PULLUP_DISABLE,  /*!< Internal GPIO pull mode for I2C sda signal*/
+        .scl_pullup_en = GPIO_PULLUP_DISABLE,  /*!< Internal GPIO pull mode for I2C scl signal*/
+
+        .master.clk_speed = frequency,
+        .clk_flags = 0
+    };
+    result = i2c_param_config(self->i2c_num, &i2c_conf);
+    if (result != ESP_OK) {
+        mp_raise_ValueError(translate("Invalid pins"));
     }
 
     claim_pin(sda);
@@ -142,16 +154,28 @@ void common_hal_busio_i2c_construct(busio_i2c_obj_t *self,
 }
 
 bool common_hal_busio_i2c_deinited(busio_i2c_obj_t *self) {
+
     return self->sda_pin == NULL;
 }
 
 void common_hal_busio_i2c_deinit(busio_i2c_obj_t *self) {
+    #ifdef DEBUG
+        ESP_LOGW(TAG, "deinit entered");
+    #endif
+
     if (common_hal_busio_i2c_deinited(self)) {
         return;
     }
 
+    #ifdef DEBUG
+        ESP_LOGW(TAG, "deinit continued");
+    #endif
+
+    i2c_driver_delete(self->i2c_num);
     i2c_status[self->i2c_num] = STATUS_FREE;
 
+    vSemaphoreDelete(self->semaphore);
+    self->has_lock = false;
     common_hal_reset_pin(self->sda_pin);
     common_hal_reset_pin(self->scl_pin);
     self->sda_pin = NULL;
@@ -159,12 +183,20 @@ void common_hal_busio_i2c_deinit(busio_i2c_obj_t *self) {
 }
 
 bool common_hal_busio_i2c_probe(busio_i2c_obj_t *self, uint8_t addr) {
+    #ifdef DEBUG
+        ESP_LOGW(TAG, "probe");
+    #endif
+
     i2c_cmd_handle_t cmd = i2c_cmd_link_create();
     i2c_master_start(cmd);
     i2c_master_write_byte(cmd, addr << 1, true);
     i2c_master_stop(cmd);
     esp_err_t result = i2c_master_cmd_begin(self->i2c_num, cmd, 10);
     i2c_cmd_link_delete(cmd);
+        #ifdef DEBUG
+        ESP_LOGW(TAG, "probe done");
+    #endif
+
     return result == ESP_OK;
 }
 
@@ -187,6 +219,11 @@ void common_hal_busio_i2c_unlock(busio_i2c_obj_t *self) {
 
 uint8_t common_hal_busio_i2c_write(busio_i2c_obj_t *self, uint16_t addr,
                                    const uint8_t *data, size_t len, bool transmit_stop_bit) {
+
+    #ifdef DEBUG
+        ESP_LOGW(TAG, "write");
+    #endif
+
     i2c_cmd_handle_t cmd = i2c_cmd_link_create();
     i2c_master_start(cmd);
     i2c_master_write_byte(cmd, addr << 1, true);
@@ -196,6 +233,10 @@ uint8_t common_hal_busio_i2c_write(busio_i2c_obj_t *self, uint16_t addr,
     }
     esp_err_t result = i2c_master_cmd_begin(self->i2c_num, cmd, 100 /* wait in ticks */);
     i2c_cmd_link_delete(cmd);
+
+    #ifdef DEBUG
+        ESP_LOGW(TAG, "write done");
+    #endif
 
     if (result == ESP_OK) {
         return 0;
@@ -207,6 +248,10 @@ uint8_t common_hal_busio_i2c_write(busio_i2c_obj_t *self, uint16_t addr,
 
 uint8_t common_hal_busio_i2c_read(busio_i2c_obj_t *self, uint16_t addr,
                                   uint8_t *data, size_t len) {
+    #ifdef DEBUG
+        ESP_LOGW(TAG, "read");
+    #endif
+
     i2c_cmd_handle_t cmd = i2c_cmd_link_create();
     i2c_master_start(cmd);
     i2c_master_write_byte(cmd, addr << 1 | 1, true); // | 1 to indicate read
@@ -218,7 +263,10 @@ uint8_t common_hal_busio_i2c_read(busio_i2c_obj_t *self, uint16_t addr,
     esp_err_t result = i2c_master_cmd_begin(self->i2c_num, cmd, 100 /* wait in ticks */);
     i2c_cmd_link_delete(cmd);
 
-    if (result == ESP_OK) {
+    #ifdef DEBUG
+        ESP_LOGW(TAG, "read done");
+    #endif
+if (result == ESP_OK) {
         return 0;
     } else if (result == ESP_FAIL) {
         return MP_ENODEV;
@@ -228,6 +276,10 @@ uint8_t common_hal_busio_i2c_read(busio_i2c_obj_t *self, uint16_t addr,
 
 void common_hal_busio_i2c_never_reset(busio_i2c_obj_t *self) {
     never_reset_i2c(self->i2c_num);
+
+    #ifdef DEBUG
+        ESP_LOGW(TAG, "never reset");
+    #endif
 
     common_hal_never_reset_pin(self->scl_pin);
     common_hal_never_reset_pin(self->sda_pin);
