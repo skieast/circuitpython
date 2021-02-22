@@ -6,14 +6,14 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-01-04 12:55-0600\n"
-"PO-Revision-Date: 2021-01-07 18:01+0000\n"
-"Last-Translator: Dennis Schweer <dennis.schweer@ruhr-uni-bochum.de>\n"
+"PO-Revision-Date: 2021-02-05 15:41+0000\n"
+"Last-Translator: Jeff Epler <jepler@gmail.com>\n"
 "Language: de_DE\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 4.4.1-dev\n"
+"X-Generator: Weblate 4.5-dev\n"
 
 #: main.c
 msgid ""
@@ -120,7 +120,8 @@ msgstr "%q sollte ein integer sein"
 
 #: py/bc.c py/objnamedtuple.c
 msgid "%q() takes %d positional arguments but %d were given"
-msgstr "%q() nimmt %d Argumente ohne Keyword an, aber es wurden %d angegeben"
+msgstr ""
+"%q() nimmt %d Argumente ohne Schlüsselwort an, aber es wurden %d angegeben"
 
 #: ports/esp32s2/bindings/espidf/__init__.c ports/esp32s2/esp_error.c
 #, c-format
@@ -235,7 +236,7 @@ msgstr "'await' außerhalb einer Funktion"
 
 #: py/compile.c
 msgid "'await', 'async for' or 'async with' outside async function"
-msgstr ""
+msgstr "'await', 'async for' oder 'async with' außerhalb einer async Funktion"
 
 #: py/compile.c
 msgid "'break' outside loop"
@@ -267,7 +268,7 @@ msgstr "'return' außerhalb einer Funktion"
 
 #: py/compile.c
 msgid "'yield from' inside async function"
-msgstr ""
+msgstr "'yield from' innerhalb einer async Funktion"
 
 #: py/compile.c
 msgid "'yield' outside function"
@@ -313,7 +314,7 @@ msgstr "Adresstyp außerhalb des zulässigen Bereichs"
 
 #: ports/esp32s2/common-hal/canio/CAN.c
 msgid "All CAN peripherals are in use"
-msgstr ""
+msgstr "Alle CAN Schnittstellen sind in Benutzung"
 
 #: ports/esp32s2/common-hal/busio/I2C.c ports/nrf/common-hal/busio/I2C.c
 msgid "All I2C peripherals are in use"
@@ -329,7 +330,7 @@ msgstr "Alle PCNT Einheiten sind in Benutzung"
 #: ports/esp32s2/common-hal/canio/Listener.c
 #: ports/stm/common-hal/canio/Listener.c
 msgid "All RX FIFOs in use"
-msgstr ""
+msgstr "Alle RX FIFOs sind in Benutzung"
 
 #: ports/esp32s2/common-hal/busio/SPI.c ports/nrf/common-hal/busio/SPI.c
 msgid "All SPI peripherals are in use"
@@ -367,6 +368,7 @@ msgstr "Alle timer für diesen Pin werden bereits benutzt"
 #: ports/esp32s2/common-hal/pulseio/PulseOut.c
 #: ports/nrf/common-hal/audiopwmio/PWMAudioOut.c
 #: ports/nrf/common-hal/pulseio/PulseIn.c ports/nrf/peripherals/nrf/timers.c
+#: ports/raspberrypi/common-hal/audiopwmio/PWMAudioOut.c
 #: ports/stm/peripherals/timers.c shared-bindings/pwmio/PWMOut.c
 msgid "All timers in use"
 msgstr "Alle timer werden benutzt"
@@ -541,7 +543,7 @@ msgstr "Puffer zu groß und kann nicht reserviert werden"
 #: shared-bindings/_bleio/PacketBuffer.c
 #, c-format
 msgid "Buffer too short by %d bytes"
-msgstr "Buffer um %d Bytes zu kurz"
+msgstr "Puffer um %d Bytes zu kurz"
 
 #: ports/atmel-samd/common-hal/displayio/ParallelBus.c
 #: ports/esp32s2/common-hal/displayio/ParallelBus.c
@@ -695,7 +697,7 @@ msgstr ""
 
 #: supervisor/shared/safe_mode.c
 msgid "CircuitPython was unable to allocate the heap.\n"
-msgstr ""
+msgstr "CircuitPython war es nicht möglich heap-Speicher zu allozieren.\n"
 
 #: shared-module/bitbangio/SPI.c
 msgid "Clock pin init failed."
@@ -773,7 +775,7 @@ msgstr "PWM konnte nicht neu gestartet werden"
 
 #: ports/esp32s2/common-hal/neopixel_write/__init__.c
 msgid "Could not retrieve clock"
-msgstr ""
+msgstr "Clock konnte nicht ermittelt werden"
 
 #: shared-bindings/_bleio/Adapter.c
 msgid "Could not set address"
@@ -811,7 +813,7 @@ msgstr "Absturz in den HardFault_Handler."
 
 #: ports/stm/common-hal/analogio/AnalogOut.c
 msgid "DAC Channel Init Error"
-msgstr "DAC Kanal Intialisierungs Fehler"
+msgstr "DAC Kanal Initialisierungsfehler"
 
 #: ports/stm/common-hal/analogio/AnalogOut.c
 msgid "DAC Device Init Error"
@@ -977,7 +979,7 @@ msgstr "Zuweisung des Wifi Speichers ist fehlgeschlagen"
 
 #: ports/esp32s2/common-hal/wifi/ScannedNetworks.c
 msgid "Failed to allocate wifi scan memory"
-msgstr ""
+msgstr "Zuweisung des Wifi Scan Speichers ist fehlgeschlagen"
 
 #: ports/nrf/common-hal/_bleio/Adapter.c
 msgid "Failed to connect: internal error"
@@ -993,7 +995,7 @@ msgstr "Wifi Initialisierung ist fehlgeschlagen"
 
 #: shared-module/audiomp3/MP3Decoder.c
 msgid "Failed to parse MP3 file"
-msgstr "Parsen der MP3 Datei fehlgeschlagen"
+msgstr "MP3-Datei konnte nicht analysiert werden"
 
 #: ports/nrf/sd_mutex.c
 #, c-format
@@ -1016,7 +1018,7 @@ msgstr "Filter zu komplex"
 
 #: ports/esp32s2/common-hal/dualbank/__init__.c
 msgid "Firmware image is invalid"
-msgstr ""
+msgstr "Firmware Image ist ungültig"
 
 #: ports/cxd56/common-hal/camera/Camera.c
 msgid "Format not supported"
@@ -1110,6 +1112,11 @@ msgstr ""
 #: ports/esp32s2/common-hal/watchdog/WatchDogTimer.c
 msgid "Initialization failed due to lack of memory"
 msgstr "Initialisierung aufgrund von Speichermangel fehlgeschlagen"
+
+#: shared-bindings/bitops/__init__.c
+#, c-format
+msgid "Input buffer length (%d) must be a multiple of the strand count (%d)"
+msgstr ""
 
 #: ports/atmel-samd/common-hal/pulseio/PulseIn.c
 msgid "Input taking too long"
@@ -1468,8 +1475,13 @@ msgstr "Kein DAC im Chip vorhanden"
 
 #: ports/atmel-samd/common-hal/audiobusio/I2SOut.c
 #: ports/atmel-samd/common-hal/audioio/AudioOut.c
+#: ports/raspberrypi/common-hal/audiopwmio/PWMAudioOut.c
 msgid "No DMA channel found"
 msgstr "Kein DMA Kanal gefunden"
+
+#: ports/raspberrypi/common-hal/audiopwmio/PWMAudioOut.c
+msgid "No DMA pacing timer found"
+msgstr ""
 
 #: shared-module/adafruit_bus_device/I2CDevice.c
 #, c-format
@@ -1681,6 +1693,11 @@ msgstr ""
 msgid "Out of sockets"
 msgstr ""
 
+#: shared-bindings/bitops/__init__.c
+#, c-format
+msgid "Output buffer must be at least %d bytes"
+msgstr ""
+
 #: shared-bindings/audiobusio/PDMIn.c
 msgid "Oversample must be multiple of 8."
 msgstr "Oversample muss ein Vielfaches von 8 sein."
@@ -1754,6 +1771,10 @@ msgstr ""
 "Pinbelegung verwendet %d Bytes pro Element, was mehr als die idealen %d "
 "Bytes verbraucht. Wenn dies nicht vermieden werden kann, übergeben Sie "
 "allow_inefficient = True an den Konstruktor"
+
+#: ports/raspberrypi/common-hal/audiopwmio/PWMAudioOut.c
+msgid "Pins must share PWM slice"
+msgstr ""
 
 #: py/builtinhelp.c
 msgid "Plus any modules on the filesystem\n"
@@ -1994,6 +2015,14 @@ msgstr "Splitting mit sub-captures"
 msgid "Stack size must be at least 256"
 msgstr "Die Stackgröße sollte mindestens 256 sein"
 
+#: ports/raspberrypi/common-hal/audiopwmio/PWMAudioOut.c
+msgid "Stereo left must be on PWM channel A"
+msgstr ""
+
+#: ports/raspberrypi/common-hal/audiopwmio/PWMAudioOut.c
+msgid "Stereo right must be on PWM channel B"
+msgstr ""
+
 #: shared-bindings/multiterminal/__init__.c
 msgid "Stream missing readinto() or write() method."
 msgstr "Stream fehlt readinto() oder write() Methode."
@@ -2171,6 +2200,7 @@ msgstr "Der UUID-Wert ist kein str-, int- oder Byte-Puffer"
 
 #: ports/atmel-samd/common-hal/audiobusio/I2SOut.c
 #: ports/atmel-samd/common-hal/audioio/AudioOut.c
+#: ports/raspberrypi/common-hal/audiopwmio/PWMAudioOut.c
 msgid "Unable to allocate buffers for signed conversion"
 msgstr "Konnte keine Buffer für Vorzeichenumwandlung allozieren"
 
@@ -2903,7 +2933,7 @@ msgstr "erwarte tuple/list"
 
 #: py/modthread.c
 msgid "expecting a dict for keyword args"
-msgstr "erwarte ein dict als Keyword-Argumente"
+msgstr "erwarte ein dict als Schlüsselwort-Argumente"
 
 #: py/compile.c
 msgid "expecting an assembler instruction"
@@ -2923,11 +2953,11 @@ msgstr ""
 
 #: py/argcheck.c
 msgid "extra keyword arguments given"
-msgstr "Es wurden zusätzliche Keyword-Argumente angegeben"
+msgstr "Es wurden zusätzliche Schlüsselwort-Argumente angegeben"
 
 #: py/argcheck.c
 msgid "extra positional arguments given"
-msgstr "Es wurden zusätzliche Argumente ohne Keyword angegeben"
+msgstr "Es wurden zusätzliche Argumente ohne Schlüsselwort angegeben"
 
 #: py/parse.c
 msgid "f-string expression part cannot include a '#'"
@@ -3008,7 +3038,7 @@ msgstr "voll"
 
 #: py/argcheck.c
 msgid "function does not take keyword arguments"
-msgstr "Funktion akzeptiert keine Keyword-Argumente"
+msgstr "Funktion akzeptiert keine Schlüsselwort-Argumente"
 
 #: py/argcheck.c
 #, c-format
@@ -3030,26 +3060,27 @@ msgstr ""
 #: py/argcheck.c
 #, c-format
 msgid "function missing %d required positional arguments"
-msgstr "Funktion vermisst %d benötigte Argumente ohne Keyword"
+msgstr "Funktion vermisst %d benötigte Argumente ohne Schlüsselwort"
 
 #: py/bc.c
 msgid "function missing keyword-only argument"
-msgstr "Funktion vermisst Keyword-only-Argument"
+msgstr "Funktion vermisst Nur-Schlüsselwort-Argument"
 
 #: py/bc.c
 msgid "function missing required keyword argument '%q'"
-msgstr "Funktion vermisst benötigtes Keyword-Argumente '%q'"
+msgstr "Funktion vermisst benötigtes Schlüsselwort-Argumente '%q'"
 
 #: py/bc.c
 #, c-format
 msgid "function missing required positional argument #%d"
-msgstr "Funktion vermisst benötigtes Argumente ohne Keyword #%d"
+msgstr "Funktion vermisst benötigtes Argumente ohne Schlüsselwort #%d"
 
 #: py/argcheck.c py/bc.c py/objnamedtuple.c shared-bindings/time/__init__.c
 #, c-format
 msgid "function takes %d positional arguments but %d were given"
 msgstr ""
-"Funktion nimmt %d Argumente ohne Keyword an, aber es wurden %d angegeben"
+"Funktion nimmt %d Argumente ohne Schlüsselwort an, aber es wurden %d "
+"angegeben"
 
 #: shared-bindings/time/__init__.c
 msgid "function takes exactly 9 arguments"
@@ -3279,8 +3310,8 @@ msgstr ""
 #: py/argcheck.c
 msgid "keyword argument(s) not yet implemented - use normal args instead"
 msgstr ""
-"Keyword-Argument(e) noch nicht implementiert - verwenden Sie stattdessen "
-"normale Argumente"
+"Schlüsselwort-Argument(e) noch nicht implementiert - verwenden Sie "
+"stattdessen normale Argumente"
 
 #: py/bc.c
 msgid "keywords must be strings"
@@ -3705,6 +3736,10 @@ msgstr "pop von einem leeren PulseIn"
 msgid "pop from empty %q"
 msgstr ""
 
+#: shared-bindings/socketpool/Socket.c shared-bindings/ssl/SSLSocket.c
+msgid "port must be >= 0"
+msgstr ""
+
 #: py/objint_mpz.c
 msgid "pow() 3rd argument cannot be 0"
 msgstr "pow() drittes Argument darf nicht 0 sein"
@@ -4070,11 +4105,11 @@ msgstr ""
 
 #: py/bc.c
 msgid "unexpected keyword argument"
-msgstr "unerwartetes Keyword-Argument"
+msgstr "unerwartetes Schlüsselwort-Argument"
 
 #: py/bc.c py/objnamedtuple.c
 msgid "unexpected keyword argument '%q'"
-msgstr "unerwartetes Keyword-Argument '%q'"
+msgstr "unerwartetes Schlüsselwort-Argument '%q'"
 
 #: py/lexer.c
 msgid "unicode name escapes"
@@ -4166,6 +4201,11 @@ msgstr ""
 
 #: shared-bindings/watchdog/WatchDogTimer.c
 msgid "watchdog timeout must be greater than 0"
+msgstr ""
+
+#: shared-bindings/bitops/__init__.c
+#, c-format
+msgid "width must be from 2 to 8 (inclusive), not %d"
 msgstr ""
 
 #: shared-bindings/rgbmatrix/RGBMatrix.c
