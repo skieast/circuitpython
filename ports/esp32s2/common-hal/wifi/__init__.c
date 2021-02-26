@@ -151,8 +151,16 @@ void wifi_reset(void) {
     ESP_ERROR_CHECK(esp_event_handler_instance_unregister(IP_EVENT,
                                                           IP_EVENT_STA_GOT_IP,
                                                           radio->handler_instance_got_ip));
+
+    esp_wifi_restore();
+    esp_err_t err = esp_wifi_stop();
+    if (err == ESP_ERR_WIFI_NOT_INIT) {
+        return;
+    }
+    ESP_ERROR_CHECK(err);
     ESP_ERROR_CHECK(esp_wifi_deinit());
     esp_netif_destroy(radio->netif);
+
     radio->netif = NULL;
 }
 
