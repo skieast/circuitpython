@@ -81,6 +81,7 @@ jobs:
       working-directory: tests
     - name: Print failure info
       run: |
+        shopt -s nullglob;
         for exp in *.exp;
         do testbase=$(basename $exp .exp);
         echo -e "\nFAILURE $testbase";
@@ -313,6 +314,7 @@ jobs:
         - "simmel"
         - "snekboard"
         - "sparkfun_lumidrive"
+        - "sparkfun_nrf52840_micromod"
         - "sparkfun_nrf52840_mini"
         - "sparkfun_qwiic_micro_no_flash"
         - "sparkfun_qwiic_micro_with_flash"
@@ -449,6 +451,8 @@ jobs:
         - "espressif_kaluga_1"
         - "espressif_saola_1_wroom"
         - "espressif_saola_1_wrover"
+        - "franzininho_wifi_wroom"
+        - "franzininho_wifi_wrover"
         - "lilygo_ttgo_t8_s2_st7789"
         - "microdev_micro_s2"
         - "muselab_nanoesp32_s2"
@@ -477,7 +481,7 @@ jobs:
       id: idf-cache
       with:
         path: ${{ github.workspace }}/.idf_tools
-        key: ${{ runner.os }}-idf-tools-${{ hashFiles('.git/modules/ports/esp32s2/esp-idf/HEAD') }}-20210128
+        key: ${{ runner.os }}-idf-tools-${{ hashFiles('.git/modules/ports/esp32s2/esp-idf/HEAD') }}-20210304
     - name: Clone IDF submodules
       run: |
         (cd $IDF_PATH && git submodule update --init)

@@ -75,6 +75,7 @@
 #define MICROPY_MODULE_BUILTIN_INIT      (1)
 #define MICROPY_NONSTANDARD_TYPECODES    (0)
 #define MICROPY_OPT_COMPUTED_GOTO        (1)
+#define MICROPY_OPT_COMPUTED_GOTO_SAVE_SPACE (CIRCUITPY_COMPUTED_GOTO_SAVE_SPACE)
 #define MICROPY_PERSISTENT_CODE_LOAD     (1)
 
 #define MICROPY_PY_ARRAY                 (1)
@@ -306,13 +307,19 @@ extern const struct _mp_obj_module_t bitbangio_module;
 #define BITBANGIO_MODULE
 #endif
 
+#if CIRCUITPY_BITMAPTOOLS
+#define BITMAPTOOLS_MODULE           { MP_OBJ_NEW_QSTR(MP_QSTR_bitmaptools), (mp_obj_t)&bitmaptools_module },
+extern const struct _mp_obj_module_t bitmaptools_module;
+#else
+#define BITMAPTOOLS_MODULE
+#endif
+
 #if CIRCUITPY_BITOPS
 extern const struct _mp_obj_module_t bitops_module;
 #define BITOPS_MODULE        { MP_OBJ_NEW_QSTR(MP_QSTR_bitops),(mp_obj_t)&bitops_module },
 #else
 #define BITOPS_MODULE
 #endif
-
 
 #if CIRCUITPY_BLEIO
 #define BLEIO_MODULE           { MP_OBJ_NEW_QSTR(MP_QSTR__bleio), (mp_obj_t)&bleio_module },
@@ -835,6 +842,7 @@ extern const struct _mp_obj_module_t msgpack_module;
     AUDIOPWMIO_MODULE \
     BINASCII_MODULE \
     BITBANGIO_MODULE \
+    BITMAPTOOLS_MODULE \
     BITOPS_MODULE \
     BLEIO_MODULE \
     BOARD_MODULE \
