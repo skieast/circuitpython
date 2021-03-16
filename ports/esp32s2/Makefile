@@ -244,7 +244,12 @@ IDF_PATH = $(realpath ./esp-idf)
 $(BUILD)/esp-idf:
 	$(Q)$(MKDIR) -p $@
 
+ifdef PARTITION
+FLASH_SDKCONFIG = esp-idf-config/sdkconfig-$(CIRCUITPY_ESP_FLASH_SIZE)-$(PARTITION).defaults
+else
 FLASH_SDKCONFIG = esp-idf-config/sdkconfig-$(CIRCUITPY_ESP_FLASH_SIZE).defaults
+endif
+
 ifeq ($(DEBUG), 1)
 	DEBUG_SDKCONFIG = esp-idf-config/sdkconfig-debug.defaults
 else
