@@ -244,7 +244,12 @@ IDF_PATH = $(realpath ./esp-idf)
 $(BUILD)/esp-idf:
 	$(Q)$(MKDIR) -p $@
 
+ifdef PARTITION
+FLASH_SDKCONFIG = esp-idf-config/sdkconfig-$(CIRCUITPY_ESP_FLASH_SIZE)-$(PARTITION).defaults
+else
 FLASH_SDKCONFIG = esp-idf-config/sdkconfig-$(CIRCUITPY_ESP_FLASH_SIZE).defaults
+endif
+
 ifeq ($(DEBUG), 1)
 	DEBUG_SDKCONFIG = esp-idf-config/sdkconfig-debug.defaults
 else
@@ -345,6 +350,12 @@ flash: $(BUILD)/firmware.bin
 
 flash-circuitpython-only: $(BUILD)/circuitpython-firmware.bin
 	esptool.py --chip esp32s2 -p $(PORT) $(ESPTOOL_FLAGS) write_flash $(FLASH_FLAGS) 0x10000 $^
+
+flash-wsl2: $(BUILD)/firmware.bin
+	esptool.exe --chip esp32s2 -p $(PORT) --no-stub -b 921600 --before=default_reset --after=hard_reset write_flash $(FLASH_FLAGS) 0x0000 $^
+
+flash-circuitpython-only-wsl2: $(BUILD)/circuitpython-firmware.bin
+	esptool.exe --chip esp32s2 -p $(PORT) --no-stub -b 921600 --before=default_reset --after=hard_reset write_flash $(FLASH_FLAGS) 0x10000 $^
 
 include $(TOP)/py/mkrules.mk
 
