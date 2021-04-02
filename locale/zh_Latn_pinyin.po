@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: circuitpython-cn\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-01-04 12:55-0600\n"
-"PO-Revision-Date: 2021-03-16 00:47+0000\n"
+"PO-Revision-Date: 2021-03-29 08:26+0000\n"
 "Last-Translator: hexthat <hexthat@gmail.com>\n"
 "Language-Team: Chinese Hanyu Pinyin\n"
 "Language: zh_Latn_pinyin\n"
@@ -15,7 +15,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Weblate 4.5.2-dev\n"
+"X-Generator: Weblate 4.6-dev\n"
 
 #: main.c
 msgid ""
@@ -350,7 +350,7 @@ msgstr "Suǒyǒu UART wàiwéi zhèngzài shǐyòng"
 
 #: shared-bindings/pwmio/PWMOut.c
 msgid "All channels in use"
-msgstr ""
+msgstr "suǒ yǒu shǐ yòng de tōng dào"
 
 #: ports/atmel-samd/common-hal/audioio/AudioOut.c
 msgid "All event channels in use"
@@ -1194,6 +1194,7 @@ msgstr "wú xiào %q"
 
 #: ports/atmel-samd/common-hal/audiobusio/I2SOut.c
 #: ports/atmel-samd/common-hal/audiobusio/PDMIn.c
+#: ports/mimxrt10xx/common-hal/busio/UART.c
 msgid "Invalid %q pin"
 msgstr "Wúxiào de %q yǐn jiǎo"
 
@@ -1605,6 +1606,10 @@ msgstr "Méiyǒu jìshí qì"
 msgid "Nordic Soft Device failure assertion."
 msgstr "Nordic ruǎn shèbèi gùzhàng shēngmíng."
 
+#: ports/nrf/common-hal/_bleio/__init__.c
+msgid "Nordic soft device out of memory"
+msgstr ""
+
 #: shared-bindings/ipaddress/IPv4Address.c shared-bindings/ipaddress/__init__.c
 msgid "Not a valid IP string"
 msgstr "Wúxiào de IP zìfú chuàn"
@@ -1913,7 +1918,7 @@ msgstr "Zhǐ dú"
 msgid "Read-only filesystem"
 msgstr "Zhǐ dú wénjiàn xìtǒng"
 
-#: shared-module/bitmaptools/__init__.c shared-module/displayio/Bitmap.c
+#: shared-module/displayio/Bitmap.c
 msgid "Read-only object"
 msgstr "Zhǐ dú duìxiàng"
 
@@ -1987,14 +1992,6 @@ msgstr "Cǎiyàng lǜ tài gāo. Tā bìxū xiǎoyú %d"
 #: ports/nrf/common-hal/_bleio/Adapter.c
 msgid "Scan already in progess. Stop with stop_scan."
 msgstr "Zhèngzài jìn háng sǎomiáo. Shǐyòng stop_scan tíngzhǐ."
-
-#: ports/mimxrt10xx/common-hal/busio/UART.c
-msgid "Selected CTS pin not valid"
-msgstr "Suǒ xuǎn de CTS yǐn jiǎo wúxiào"
-
-#: ports/mimxrt10xx/common-hal/busio/UART.c
-msgid "Selected RTS pin not valid"
-msgstr "Suǒ xuǎn de RTS yǐn jiǎo wúxiào"
 
 #: ports/atmel-samd/common-hal/audiobusio/I2SOut.c
 #: ports/atmel-samd/common-hal/audiobusio/PDMIn.c
@@ -2882,7 +2879,7 @@ msgstr "chā yì shùn xù fàn wéi"
 
 #: extmod/ulab/code/linalg/linalg.c
 msgid "dimensions do not match"
-msgstr ""
+msgstr "chǐ cùn bù pǐ pèi"
 
 #: py/modmath.c py/objfloat.c py/objint_longlong.c py/objint_mpz.c py/runtime.c
 #: shared-bindings/math/__init__.c
@@ -3245,7 +3242,7 @@ msgstr "wúxiào de cānshù"
 #: shared-bindings/bitmaptools/__init__.c
 #, c-format
 msgid "invalid bits_per_pixel %d, must be, 1, 4, 8, 16, 24, or 32"
-msgstr ""
+msgstr "wú xiào bits_per_pixel %d， bì xū shì, 1, 4, 8, 16, 24, huò 32"
 
 #: extmod/modussl_axtls.c
 msgid "invalid cert"
@@ -3258,12 +3255,12 @@ msgstr "dupterm suǒyǐn wúxiào"
 #: shared-bindings/bitmaptools/__init__.c
 #, c-format
 msgid "invalid element size %d for bits_per_pixel %d\n"
-msgstr ""
+msgstr "wú xiào yuán jiàn dà xiǎo %d wéi bits_per_pixel %d\n"
 
 #: shared-bindings/bitmaptools/__init__.c
 #, c-format
 msgid "invalid element_size %d, must be, 1, 2, or 4"
-msgstr ""
+msgstr "wú xiào element_size %d, bì xū shì, 1, 2, huò 4"
 
 #: extmod/modframebuf.c
 msgid "invalid format"
@@ -4296,6 +4293,12 @@ msgstr "zi bìxū wèi fú diǎn xíng"
 #: extmod/ulab/code/filter/filter.c
 msgid "zi must be of shape (n_section, 2)"
 msgstr "zi bìxū jùyǒu xíngzhuàng (n_section,2)"
+
+#~ msgid "Selected CTS pin not valid"
+#~ msgstr "Suǒ xuǎn de CTS yǐn jiǎo wúxiào"
+
+#~ msgid "Selected RTS pin not valid"
+#~ msgstr "Suǒ xuǎn de RTS yǐn jiǎo wúxiào"
 
 #~ msgid "Could not initialize channel"
 #~ msgstr "Wúfǎ chūshǐhuà píndào"
