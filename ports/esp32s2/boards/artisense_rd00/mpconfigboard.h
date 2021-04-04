@@ -3,7 +3,7 @@
  *
  * The MIT License (MIT)
  *
- * Copyright (c) 2018 Scott Shawcroft for Adafruit Industries
+ * Copyright (c) 2021 Matthias Breithaupt for Artisense GmbH
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,14 +24,20 @@
  * THE SOFTWARE.
  */
 
-#include "shared-module/usb_midi/PortIn.h"
-#include "supervisor/shared/translate.h"
-#include "tusb.h"
+//Micropython setup
 
-size_t common_hal_usb_midi_portin_read(usb_midi_portin_obj_t *self, uint8_t *data, size_t len, int *errcode) {
-    return tud_midi_stream_read(data, len);
-}
+//Same setup as the Saola board but with no Neopixel on board
 
-uint32_t common_hal_usb_midi_portin_bytes_available(usb_midi_portin_obj_t *self) {
-    return tud_midi_available();
-}
+#define MICROPY_HW_BOARD_NAME       "Artisense Reference Design RD00"
+#define MICROPY_HW_MCU_NAME         "ESP32S2"
+
+#define MICROPY_HW_NEOPIXEL (&pin_GPIO45)
+
+#define CIRCUITPY_BOOT_BUTTON (&pin_GPIO0)
+
+#define BOARD_USER_SAFE_MODE_ACTION translate("pressing boot button at start up.\n")
+
+#define AUTORESET_DELAY_MS 500
+
+#define DEFAULT_UART_BUS_RX (&pin_GPIO17)
+#define DEFAULT_UART_BUS_TX (&pin_GPIO18)

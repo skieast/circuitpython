@@ -3,7 +3,7 @@
  *
  * The MIT License (MIT)
  *
- * Copyright (c) 2018 Scott Shawcroft for Adafruit Industries
+ * Copyright (c) 2021 Matthias Breithaupt for Artisense GmbH
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,14 +24,36 @@
  * THE SOFTWARE.
  */
 
-#include "shared-module/usb_midi/PortIn.h"
-#include "supervisor/shared/translate.h"
-#include "tusb.h"
+#include "supervisor/board.h"
+#include "mpconfigboard.h"
+#include "shared-bindings/microcontroller/Pin.h"
 
-size_t common_hal_usb_midi_portin_read(usb_midi_portin_obj_t *self, uint8_t *data, size_t len, int *errcode) {
-    return tud_midi_stream_read(data, len);
+void board_init(void) {
+    // USB
+    common_hal_never_reset_pin(&pin_GPIO19);
+    common_hal_never_reset_pin(&pin_GPIO20);
+
+    // Debug UART
+#ifdef DEBUG
+    common_hal_never_reset_pin(&pin_GPIO43);
+    common_hal_never_reset_pin(&pin_GPIO44);
+#endif /* DEBUG */
+
+    // Crystal
+    common_hal_never_reset_pin(&pin_GPIO15);
+    common_hal_never_reset_pin(&pin_GPIO16);
+
+    // PSRAM
+    common_hal_never_reset_pin(&pin_GPIO26);
 }
 
-uint32_t common_hal_usb_midi_portin_bytes_available(usb_midi_portin_obj_t *self) {
-    return tud_midi_available();
+bool board_requests_safe_mode(void) {
+    return false;
+}
+
+void reset_board(void) {
+
+}
+
+void board_deinit(void) {
 }
