@@ -3,7 +3,7 @@
  *
  * The MIT License (MIT)
  *
- * Copyright (c) 2018 Scott Shawcroft for Adafruit Industries
+ * Copyright (c) 2017 Scott Shawcroft for Adafruit Industries
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,25 +24,24 @@
  * THE SOFTWARE.
  */
 
-#ifndef MICROPY_INCLUDED_ATMEL_SAMD_COMMON_HAL_ROTARYIO_INCREMENTALENCODER_H
-#define MICROPY_INCLUDED_ATMEL_SAMD_COMMON_HAL_ROTARYIO_INCREMENTALENCODER_H
+#include "supervisor/board.h"
+#include "mpconfigboard.h"
 
-#include "common-hal/microcontroller/Pin.h"
+void board_init(void) {
+    // struct port_config pin_conf;
+    // port_get_config_defaults(&pin_conf);
+    //
+    // pin_conf.direction  = PORT_PIN_DIR_OUTPUT;
+    // port_pin_set_config(MICROPY_HW_LED_TX, &pin_conf);
+    // port_pin_set_output_level(MICROPY_HW_LED_TX, true);
+    //
+    // port_pin_set_config(MICROPY_HW_LED_RX, &pin_conf);
+    // port_pin_set_output_level(MICROPY_HW_LED_RX, true);
+}
 
-#include "py/obj.h"
+bool board_requests_safe_mode(void) {
+    return false;
+}
 
-typedef struct {
-    mp_obj_base_t base;
-    uint8_t pin_a;
-    uint8_t pin_b;
-    uint8_t eic_channel_a;
-    uint8_t eic_channel_b;
-    uint8_t state;        // <old A><old B>
-    int8_t quarter_count; // count intermediate transitions between detents
-    mp_int_t position;
-} rotaryio_incrementalencoder_obj_t;
-
-
-void incrementalencoder_interrupt_handler(uint8_t channel);
-
-#endif // MICROPY_INCLUDED_ATMEL_SAMD_COMMON_HAL_ROTARYIO_INCREMENTALENCODER_H
+void reset_board(void) {
+}
