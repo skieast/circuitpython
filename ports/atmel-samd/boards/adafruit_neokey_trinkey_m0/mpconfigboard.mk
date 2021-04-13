@@ -1,6 +1,6 @@
 USB_VID = 0x239A
-USB_PID = 0x80F0
-USB_PRODUCT = "NeoPixel Trinkey M0"
+USB_PID = 0x8100
+USB_PRODUCT = "NeoKey Trinkey M0"
 USB_MANUFACTURER = "Adafruit Industries LLC"
 
 CHIP_VARIANT = SAMD21E18A
