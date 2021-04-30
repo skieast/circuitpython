@@ -451,6 +451,7 @@ $(filter $(SRC_PATTERNS), \
 	msgpack/__init__.c \
 	msgpack/ExtType.c \
 	supervisor/RunReason.c \
+	wifi/AuthMode.c \
 )
 
 SRC_BINDINGS_ENUMS += \
@@ -643,6 +644,19 @@ $(addprefix lib/,\
 	)
 endif
 endif
+
+SRC_CIRCUITPY_COMMON = \
+	lib/libc/string0.c \
+	lib/mp-readline/readline.c \
+	lib/oofatfs/ff.c \
+	lib/oofatfs/ffunicode.c \
+	lib/timeutils/timeutils.c \
+	lib/utils/buffer_helper.c \
+	lib/utils/context_manager_helpers.c \
+	lib/utils/interrupt_char.c \
+	lib/utils/pyexec.c \
+	lib/utils/stdout_helpers.c \
+	lib/utils/sys_stdio_mphal.c
 
 ifdef LD_TEMPLATE_FILE
 # Generate a linker script (.ld file) from a template, for those builds that use it.
