@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-01-04 12:55-0600\n"
-"PO-Revision-Date: 2021-04-22 17:16+0000\n"
-"Last-Translator: Jose David M <jquintana202020@gmail.com>\n"
+"PO-Revision-Date: 2021-05-05 15:32+0000\n"
+"Last-Translator: Alvaro Figueroa <alvaro@greencore.co.cr>\n"
 "Language-Team: \n"
 "Language: es\n"
 "MIME-Version: 1.0\n"
@@ -361,7 +361,7 @@ msgstr "Todos los canales de eventos estan siendo usados"
 msgid "All state machines in use"
 msgstr "Todas las máquinas de estado en uso"
 
-#: ports/atmel-samd/audio_dma.c ports/atmel-samd/common-hal/audiobusio/PDMIn.c
+#: ports/atmel-samd/audio_dma.c
 msgid "All sync event channels in use"
 msgstr ""
 "Todos los canales de eventos de sincronización (sync event channels) están "
@@ -453,6 +453,10 @@ msgstr "Tratando de localizar %d bloques"
 #: supervisor/shared/safe_mode.c
 msgid "Attempted heap allocation when VM not running."
 msgstr "Asignación del montículo mientras la VM no esta ejecutándose."
+
+#: shared-bindings/wifi/Radio.c
+msgid "AuthMode.OPEN is not used with password"
+msgstr ""
 
 #: shared-bindings/wifi/Radio.c
 msgid "Authentication failure"
@@ -701,6 +705,7 @@ msgid "Cannot vary frequency on a timer that is already in use"
 msgstr "No puede variar la frecuencia en un temporizador que ya está en uso"
 
 #: ports/esp32s2/common-hal/alarm/pin/PinAlarm.c
+#: ports/nrf/common-hal/alarm/pin/PinAlarm.c
 msgid "Cannot wake on pin edge. Only level."
 msgstr "No puede despertar en pin edge, solo en nivel."
 
@@ -760,10 +765,6 @@ msgstr ""
 #: py/persistentcode.c
 msgid "Corrupt .mpy file"
 msgstr "Archivo .mpy corrupto"
-
-#: py/emitglue.c
-msgid "Corrupt raw code"
-msgstr "Código crudo corrupto"
 
 #: ports/cxd56/common-hal/camera/Camera.c
 msgid "Could not initialize Camera"
@@ -1219,6 +1220,7 @@ msgstr "%q inválido"
 
 #: ports/atmel-samd/common-hal/audiobusio/I2SOut.c
 #: ports/atmel-samd/common-hal/audiobusio/PDMIn.c
+#: ports/atmel-samd/common-hal/imagecapture/ParallelImageCapture.c
 #: ports/mimxrt10xx/common-hal/busio/UART.c
 msgid "Invalid %q pin"
 msgstr "Pin %q inválido"
@@ -1232,6 +1234,10 @@ msgstr "selección inválida de pin %q"
 #: ports/stm/common-hal/analogio/AnalogIn.c
 msgid "Invalid ADC Unit value"
 msgstr "Valor de unidad de ADC no válido"
+
+#: ports/esp32s2/common-hal/wifi/Radio.c
+msgid "Invalid AuthMode"
+msgstr ""
 
 #: shared-module/displayio/OnDiskBitmap.c
 msgid "Invalid BMP file"
@@ -1289,6 +1295,11 @@ msgstr "Inválido periodo de captura. Rango válido: 1 - 500"
 msgid "Invalid channel count"
 msgstr "Cuenta de canales inválida"
 
+#: ports/atmel-samd/common-hal/imagecapture/ParallelImageCapture.c
+#, c-format
+msgid "Invalid data_count %d"
+msgstr "data_count inválido %d"
+
 #: shared-bindings/digitalio/DigitalInOut.c
 msgid "Invalid direction."
 msgstr "Dirección inválida."
@@ -1321,7 +1332,8 @@ msgstr "Fase inválida"
 #: ports/atmel-samd/common-hal/audioio/AudioOut.c
 #: ports/atmel-samd/common-hal/touchio/TouchIn.c
 #: ports/esp32s2/common-hal/alarm/touch/TouchAlarm.c
-#: ports/esp32s2/common-hal/touchio/TouchIn.c shared-bindings/pwmio/PWMOut.c
+#: ports/esp32s2/common-hal/touchio/TouchIn.c
+#: ports/nrf/common-hal/alarm/pin/PinAlarm.c shared-bindings/pwmio/PWMOut.c
 #: shared-module/rgbmatrix/RGBMatrix.c
 msgid "Invalid pin"
 msgstr "Pin inválido"
@@ -1504,7 +1516,7 @@ msgstr "Salto NLR falló. Probablemente corrupción de memoria."
 msgid "NVS Error"
 msgstr "Error NVS"
 
-#: py/parse.c
+#: py/qstr.c
 msgid "Name too long"
 msgstr "Nombre muy largo"
 
@@ -1709,6 +1721,7 @@ msgid "Only one TouchAlarm can be set in deep sleep."
 msgstr "Solamente una TouchAlarm puede ser configurada durante deep sleep."
 
 #: ports/esp32s2/common-hal/alarm/time/TimeAlarm.c
+#: ports/nrf/common-hal/alarm/time/TimeAlarm.c
 msgid "Only one alarm.time alarm can be set."
 msgstr "Solamente una alarm.time puede ser configurada."
 
@@ -2470,7 +2483,7 @@ msgstr "addresses esta vacío"
 
 #: py/compile.c
 msgid "annotation must be an identifier"
-msgstr ""
+msgstr "la anotación debe ser un identificador"
 
 #: py/modbuiltins.c
 msgid "arg is an empty sequence"
@@ -2596,10 +2609,6 @@ msgstr "búfer muy pequeño para los bytes solicitados"
 msgid "buttons must be digitalio.DigitalInOut"
 msgstr "los botones necesitan ser digitalio.DigitalInOut"
 
-#: py/vm.c
-msgid "byte code not implemented"
-msgstr "codigo byte no implementado"
-
 #: shared-bindings/_pixelbuf/PixelBuf.c
 msgid "byteorder is not a string"
 msgstr "byteorder no es una cadena"
@@ -2637,10 +2646,6 @@ msgstr "solo puede tener hasta 4 parámetros para ensamblar Thumb"
 msgid "can only have up to 4 parameters to Xtensa assembly"
 msgstr "solo puede tener hasta 4 parámetros para ensamblador Xtensa"
 
-#: py/persistentcode.c
-msgid "can only save bytecode"
-msgstr "solo puede almacenar bytecode"
-
 #: py/objtype.c
 msgid "can't add special method to already-subclassed class"
 msgstr "no se puede agregar un método a una clase ya subclasificada"
@@ -2656,7 +2661,7 @@ msgstr "no puede convertir %q a %q"
 
 #: py/runtime.c
 msgid "can't convert %q to int"
-msgstr ""
+msgstr "no se puede convertir %q a int"
 
 #: py/objstr.c
 msgid "can't convert '%q' object to %q implicitly"
@@ -2709,10 +2714,6 @@ msgstr "no se puede cargar desde '%q'"
 #: py/emitnative.c
 msgid "can't load with '%q' index"
 msgstr "no se puede cargar con el índice '%q'"
-
-#: py/objgenerator.c
-msgid "can't pend throw to just-started generator"
-msgstr "no se puede colgar al generador recién iniciado"
 
 #: py/objgenerator.c
 msgid "can't send non-None value to a just-started generator"
@@ -2872,6 +2873,11 @@ msgstr "los datos deben permitir iteración"
 #: extmod/ulab/code/scipy/optimize/optimize.c
 msgid "data must be of equal length"
 msgstr "los datos deben ser de igual tamaño"
+
+#: ports/atmel-samd/common-hal/imagecapture/ParallelImageCapture.c
+#, c-format
+msgid "data pin #%d in use"
+msgstr "pin de datos #%d en uso"
 
 #: extmod/ulab/code/ndarray.c
 msgid "data type not understood"
@@ -3067,6 +3073,10 @@ msgstr "el argumento invertido debe ser un ndarray"
 msgid "float too big"
 msgstr "punto flotante demasiado grande"
 
+#: py/nativeglue.c
+msgid "float unsupported"
+msgstr "sin capacidades de flotante"
+
 #: shared-bindings/_stage/Text.c
 msgid "font must be 2048 bytes long"
 msgstr "font debe ser 2048 bytes de largo"
@@ -3081,7 +3091,7 @@ msgstr "lleno"
 
 #: py/argcheck.c
 msgid "function doesn't take keyword arguments"
-msgstr ""
+msgstr "la función no toma argumentos de tipo keyword"
 
 #: py/argcheck.c
 #, c-format
@@ -3135,9 +3145,9 @@ msgstr "generador ya se esta ejecutando"
 msgid "generator ignored GeneratorExit"
 msgstr "generador ignorado GeneratorExit"
 
-#: py/objgenerator.c
+#: py/objgenerator.c py/runtime.c
 msgid "generator raised StopIteration"
-msgstr ""
+msgstr "el generador genero StopIteration"
 
 #: shared-bindings/_stage/Layer.c
 msgid "graphic must be 2048 bytes long"
@@ -3154,6 +3164,18 @@ msgstr "identificador redefinido como global"
 #: py/compile.c
 msgid "identifier redefined as nonlocal"
 msgstr "identificador redefinido como nonlocal"
+
+#: py/compile.c
+msgid "import * not at module level"
+msgstr "import * no a nivel de módulo"
+
+#: py/persistentcode.c
+msgid "incompatible .mpy file"
+msgstr "archivo .mpy incompatible"
+
+#: py/persistentcode.c
+msgid "incompatible native .mpy architecture"
+msgstr "arquitectura nativa de .mpy incompatible"
 
 #: py/objstr.c
 msgid "incomplete format"
@@ -3199,7 +3221,7 @@ msgstr "ensamblador en línea debe ser una función"
 
 #: extmod/ulab/code/ndarray.c
 msgid "input and output shapes are not compatible"
-msgstr "Formas de entrada y salida no son compactibles"
+msgstr "Formas de entrada y salida no son compatibles"
 
 #: extmod/ulab/code/ulab_create.c
 msgid "input argument must be an integer, a tuple, or a list"
@@ -3274,6 +3296,10 @@ msgstr "interp está definido para arreglos de 1D del mismo tamaño"
 msgid "interval must be in range %s-%s"
 msgstr "el intervalo debe ser der rango %s-%s"
 
+#: py/compile.c
+msgid "invalid architecture"
+msgstr "arquitectura inválida"
+
 #: lib/netutils/netutils.c
 msgid "invalid arguments"
 msgstr "argumentos inválidos"
@@ -3283,17 +3309,9 @@ msgstr "argumentos inválidos"
 msgid "invalid bits_per_pixel %d, must be, 1, 4, 8, 16, 24, or 32"
 msgstr "los bits_per_pixel %d no son validos, deben ser 1, 4, 8, 16, 24 o 32"
 
-#: extmod/modussl_axtls.c
-msgid "invalid cert"
-msgstr "certificado inválido"
-
 #: py/compile.c
 msgid "invalid decorator"
 msgstr "decorador invalido"
-
-#: extmod/uos_dupterm.c
-msgid "invalid dupterm index"
-msgstr "index dupterm inválido"
 
 #: shared-bindings/bitmaptools/__init__.c
 #, c-format
@@ -3316,10 +3334,6 @@ msgstr "especificador de formato inválido"
 #: shared-bindings/wifi/Radio.c
 msgid "invalid hostname"
 msgstr "hostname inválido"
-
-#: extmod/modussl_axtls.c
-msgid "invalid key"
-msgstr "llave inválida"
 
 #: py/compile.c
 msgid "invalid micropython decorator"
@@ -3524,7 +3538,7 @@ msgstr "necesita más de %d valores para descomprimir"
 
 #: py/modmath.c
 msgid "negative factorial"
-msgstr ""
+msgstr "factorial negativo"
 
 #: py/objint_longlong.c py/objint_mpz.c py/runtime.c
 msgid "negative power with no float support"
@@ -3698,6 +3712,10 @@ msgstr "solo se admite sample_rate=16000"
 #: shared-bindings/alarm/SleepMemory.c shared-bindings/nvm/ByteArray.c
 msgid "only slices with step=1 (aka None) are supported"
 msgstr "solo se admiten segmentos con step=1 (alias None)"
+
+#: py/vm.c
+msgid "opcode"
+msgstr "código de operación"
 
 #: extmod/ulab/code/ndarray.c extmod/ulab/code/numpy/compare/compare.c
 #: extmod/ulab/code/numpy/vector/vector.c
@@ -3920,8 +3938,8 @@ msgid "sampling rate out of range"
 msgstr "frecuencia de muestreo fuera de rango"
 
 #: py/modmicropython.c
-msgid "schedule stack full"
-msgstr "pila de horario llena"
+msgid "schedule queue full"
+msgstr "cola de planificación llena"
 
 #: lib/utils/pyexec.c py/builtinimport.c
 msgid "script compilation not supported"
@@ -4338,6 +4356,36 @@ msgstr "zi debe ser de tipo flotante"
 #: extmod/ulab/code/scipy/signal/signal.c
 msgid "zi must be of shape (n_section, 2)"
 msgstr "zi debe ser una forma (n_section,2)"
+
+#~ msgid "Timeout waiting for DRDY"
+#~ msgstr "Tiempo de espera agotado esperado por DRDY"
+
+#~ msgid "Timeout waiting for VSYNC"
+#~ msgstr "Tiempo de espera agotado esperando por VSYNC"
+
+#~ msgid "byte code not implemented"
+#~ msgstr "codigo byte no implementado"
+
+#~ msgid "can't pend throw to just-started generator"
+#~ msgstr "no se puede colgar al generador recién iniciado"
+
+#~ msgid "invalid dupterm index"
+#~ msgstr "index dupterm inválido"
+
+#~ msgid "schedule stack full"
+#~ msgstr "pila de horario llena"
+
+#~ msgid "Corrupt raw code"
+#~ msgstr "Código crudo corrupto"
+
+#~ msgid "can only save bytecode"
+#~ msgstr "solo puede almacenar bytecode"
+
+#~ msgid "invalid cert"
+#~ msgstr "certificado inválido"
+
+#~ msgid "invalid key"
+#~ msgstr "llave inválida"
 
 #~ msgid "Viper functions don't currently support more than 4 arguments"
 #~ msgstr "funciones Viper no soportan por el momento, más de 4 argumentos"

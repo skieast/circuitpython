@@ -9,6 +9,7 @@ from __future__ import print_function
 
 import re
 import sys
+import io
 import os
 
 # Python 2/3 compatibility:
@@ -28,7 +29,7 @@ elif platform.python_version_tuple()[0] == "3":
 
 # Blacklist of qstrings that are specially handled in further
 # processing and should be ignored
-QSTRING_BLACK_LIST = set(["NULL", "number_of"])
+QSTRING_BLOCK_LIST = set(["NULL", "number_of"])
 
 # add some custom names to map characters that aren't in HTML
 name2codepoint["hyphen"] = ord("-")
@@ -107,7 +108,7 @@ def process_file(f):
             continue
         for match in re_qstr.findall(line):
             name = match.replace("MP_QSTR_", "")
-            if name not in QSTRING_BLACK_LIST:
+            if name not in QSTRING_BLOCK_LIST:
                 output.append("Q(" + qstr_unescape(name) + ")")
         for match in re_translate.findall(line):
             output.append('TRANSLATE("' + match[0] + '")')
@@ -175,7 +176,7 @@ if __name__ == "__main__":
         pass
 
     if args.command == "split":
-        with open(args.input_filename) as infile:
+        with io.open(args.input_filename, encoding="utf-8") as infile:
             process_file(infile)
 
     if args.command == "cat":

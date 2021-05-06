@@ -82,6 +82,176 @@ C_ESCAPES = {
     '"': '\\"',
 }
 
+# static qstrs, should be sorted
+# These are qstrs that are always included and always have the same number. It allows mpy files to omit them.
+static_qstr_list = [
+    "",
+    "__dir__",  # Put __dir__ after empty qstr for builtin dir() to work
+    "\n",
+    " ",
+    "*",
+    "/",
+    "<module>",
+    "_",
+    "__call__",
+    "__class__",
+    "__delitem__",
+    "__enter__",
+    "__exit__",
+    "__getattr__",
+    "__getitem__",
+    "__hash__",
+    "__init__",
+    "__int__",
+    "__iter__",
+    "__len__",
+    "__main__",
+    "__module__",
+    "__name__",
+    "__new__",
+    "__next__",
+    "__qualname__",
+    "__repr__",
+    "__setitem__",
+    "__str__",
+    "ArithmeticError",
+    "AssertionError",
+    "AttributeError",
+    "BaseException",
+    "EOFError",
+    "Ellipsis",
+    "Exception",
+    "GeneratorExit",
+    "ImportError",
+    "IndentationError",
+    "IndexError",
+    "KeyError",
+    "KeyboardInterrupt",
+    "LookupError",
+    "MemoryError",
+    "NameError",
+    "NoneType",
+    "NotImplementedError",
+    "OSError",
+    "OverflowError",
+    "RuntimeError",
+    "StopIteration",
+    "SyntaxError",
+    "SystemExit",
+    "TypeError",
+    "ValueError",
+    "ZeroDivisionError",
+    "abs",
+    "all",
+    "any",
+    "append",
+    "args",
+    "bool",
+    "builtins",
+    "bytearray",
+    "bytecode",
+    "bytes",
+    "callable",
+    "chr",
+    "classmethod",
+    "clear",
+    "close",
+    "const",
+    "copy",
+    "count",
+    "dict",
+    "dir",
+    "divmod",
+    "end",
+    "endswith",
+    "eval",
+    "exec",
+    "extend",
+    "find",
+    "format",
+    "from_bytes",
+    "get",
+    "getattr",
+    "globals",
+    "hasattr",
+    "hash",
+    "id",
+    "index",
+    "insert",
+    "int",
+    "isalpha",
+    "isdigit",
+    "isinstance",
+    "islower",
+    "isspace",
+    "issubclass",
+    "isupper",
+    "items",
+    "iter",
+    "join",
+    "key",
+    "keys",
+    "len",
+    "list",
+    "little",
+    "locals",
+    "lower",
+    "lstrip",
+    "main",
+    "map",
+    "micropython",
+    "next",
+    "object",
+    "open",
+    "ord",
+    "pop",
+    "popitem",
+    "pow",
+    "print",
+    "range",
+    "read",
+    "readinto",
+    "readline",
+    "remove",
+    "replace",
+    "repr",
+    "reverse",
+    "rfind",
+    "rindex",
+    "round",
+    "rsplit",
+    "rstrip",
+    "self",
+    "send",
+    "sep",
+    "set",
+    "setattr",
+    "setdefault",
+    "sort",
+    "sorted",
+    "split",
+    "start",
+    "startswith",
+    "staticmethod",
+    "step",
+    "stop",
+    "str",
+    "strip",
+    "sum",
+    "super",
+    "throw",
+    "to_bytes",
+    "tuple",
+    "type",
+    "update",
+    "upper",
+    "utf-8",
+    "value",
+    "values",
+    "write",
+    "zip",
+]
+
 # this must match the equivalent function in qstr.c
 def compute_hash(qstr, bytes_hash):
     hash = 5381
@@ -385,10 +555,23 @@ def qstr_escape(qst):
 
 
 def parse_input_headers(infiles):
-    # read the qstrs in from the input files
     qcfgs = {}
     qstrs = {}
     i18ns = set()
+
+    # add static qstrs
+    for qstr in static_qstr_list:
+        # work out the corresponding qstr name
+        ident = qstr_escape(qstr)
+
+        # don't add duplicates
+        assert ident not in qstrs
+
+        # add the qstr to the list, with order number to retain original order in file
+        order = len(qstrs) - 300000
+        qstrs[ident] = (order, ident, qstr)
+
+    # read the qstrs in from the input files
     for infile in infiles:
         with open(infile, "rt") as f:
             for line in f:
@@ -417,9 +600,11 @@ def parse_input_headers(infiles):
                 # get the qstr value
                 qstr = match.group(1)
 
-                # special case to specify control characters
+                # special cases to specify control characters
                 if qstr == "\\n":
                     qstr = "\n"
+                elif qstr == "\\r\\n":
+                    qstr = "\r\n"
 
                 # work out the corresponding qstr name
                 ident = qstr_escape(qstr)
@@ -448,6 +633,7 @@ def parse_input_headers(infiles):
 
     return qcfgs, qstrs, i18ns
 
+
 def escape_bytes(qstr):
     if all(32 <= ord(c) <= 126 and c != "\\" and c != '"' for c in qstr):
         # qstr is all printable ASCII so render it as-is (for easier debugging)
@@ -456,6 +642,7 @@ def escape_bytes(qstr):
         # qstr contains non-printable codes so render entire thing as hex pairs
         qbytes = bytes_cons(qstr, "utf8")
         return "".join(("\\x%02x" % b) for b in qbytes)
+
 
 def make_bytes(cfg_bytes_len, cfg_bytes_hash, qstr):
     qbytes = bytes_cons(qstr, "utf8")
@@ -478,7 +665,7 @@ def print_qstr_data(encoding_table, qcfgs, qstrs, i18ns):
     print("")
 
     # add NULL qstr with no hash or data
-    print('QDEF(MP_QSTR_NULL, 0, 0, "")')
+    print('QDEF(MP_QSTRnull, 0, 0, "")')
 
     total_qstr_size = 0
     total_qstr_compressed_size = 0
@@ -486,6 +673,7 @@ def print_qstr_data(encoding_table, qcfgs, qstrs, i18ns):
     for order, ident, qstr in sorted(qstrs.values(), key=lambda x: x[0]):
         qbytes = make_bytes(cfg_bytes_len, cfg_bytes_hash, qstr)
         print("QDEF(MP_QSTR_%s, %s)" % (ident, qbytes))
+
         total_qstr_size += len(qstr)
 
     total_text_size = 0
@@ -524,7 +712,7 @@ def print_qstr_enums(qstrs):
     print("")
 
     # add NULL qstr with no hash or data
-    print("QENUM(MP_QSTR_NULL)")
+    print("QENUM(MP_QSTRnull)")
 
     # go through each qstr and print it out
     for order, ident, qstr in sorted(qstrs.values(), key=lambda x: x[0]):

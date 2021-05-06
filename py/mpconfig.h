@@ -40,7 +40,7 @@
 // to another, you must rebuild from scratch using "-B" switch to make.
 
 #ifdef MP_CONFIGFILE
-#include "mpconfigport_coverage.h"
+#include MP_CONFIGFILE
 #else
 #include <mpconfigport.h>
 #endif
@@ -325,11 +325,22 @@
 #define MICROPY_EMIT_INLINE_XTENSA (0)
 #endif
 
+// Whether to emit Xtensa-Windowed native code
+#ifndef MICROPY_EMIT_XTENSAWIN
+#define MICROPY_EMIT_XTENSAWIN (0)
+#endif
+
 // Convenience definition for whether any native emitter is enabled
-#define MICROPY_EMIT_NATIVE (MICROPY_EMIT_X64 || MICROPY_EMIT_X86 || MICROPY_EMIT_THUMB || MICROPY_EMIT_ARM || MICROPY_EMIT_XTENSA)
+#define MICROPY_EMIT_NATIVE (MICROPY_EMIT_X64 || MICROPY_EMIT_X86 || MICROPY_EMIT_THUMB || MICROPY_EMIT_ARM || MICROPY_EMIT_XTENSA || MICROPY_EMIT_XTENSAWIN)
+
+// Select prelude-as-bytes-object for certain emitters
+#define MICROPY_EMIT_NATIVE_PRELUDE_AS_BYTES_OBJ (MICROPY_EMIT_XTENSAWIN)
 
 // Convenience definition for whether any inline assembler emitter is enabled
 #define MICROPY_EMIT_INLINE_ASM (MICROPY_EMIT_INLINE_THUMB || MICROPY_EMIT_INLINE_XTENSA)
+
+// Convenience definition for whether any native or inline assembler emitter is enabled
+#define MICROPY_EMIT_MACHINE_CODE (MICROPY_EMIT_NATIVE || MICROPY_EMIT_INLINE_ASM)
 
 /*****************************************************************************/
 /* Compiler configuration                                                    */
@@ -340,6 +351,7 @@
 #endif
 
 // Whether the compiler is dynamically configurable (ie at runtime)
+// This will disable the ability to execute native/viper code
 #ifndef MICROPY_DYNAMIC_COMPILER
 #define MICROPY_DYNAMIC_COMPILER (0)
 #endif
@@ -356,6 +368,11 @@
 // Whether to enable constant folding; eg 1+2 rewritten as 3
 #ifndef MICROPY_COMP_CONST_FOLDING
 #define MICROPY_COMP_CONST_FOLDING (1)
+#endif
+
+// Whether to enable optimisations for constant literals, eg OrderedDict
+#ifndef MICROPY_COMP_CONST_LITERAL
+#define MICROPY_COMP_CONST_LITERAL (1)
 #endif
 
 // Whether to enable lookup of constants in modules; eg module.CONST
@@ -414,6 +431,11 @@
 // Whether to enable all debugging outputs (it will be extremely verbose)
 #ifndef MICROPY_DEBUG_VERBOSE
 #define MICROPY_DEBUG_VERBOSE (0)
+#endif
+
+// Whether to enable debugging versions of MP_OBJ_NULL/STOP_ITERATION/SENTINEL
+#ifndef MICROPY_DEBUG_MP_OBJ_SENTINELS
+#define MICROPY_DEBUG_MP_OBJ_SENTINELS (0)
 #endif
 
 // Whether to enable a simple VM stack overflow check
@@ -477,6 +499,11 @@
 // Whether to use the VFS reader for importing files
 #ifndef MICROPY_READER_VFS
 #define MICROPY_READER_VFS (0)
+#endif
+
+// Whether any readers have been defined
+#ifndef MICROPY_HAS_FILE_READER
+#define MICROPY_HAS_FILE_READER (MICROPY_READER_POSIX || MICROPY_READER_VFS)
 #endif
 
 // Number of VFS mounts to persist across soft-reset.
@@ -616,6 +643,11 @@ typedef long long mp_longint_impl_t;
 // Whether issue warnings during compiling/execution
 #ifndef MICROPY_WARNINGS
 #define MICROPY_WARNINGS (0)
+#endif
+
+// Whether to support warning categories
+#ifndef MICROPY_WARNINGS_CATEGORY
+#define MICROPY_WARNINGS_CATEGORY (0)
 #endif
 
 // This macro is used when printing runtime warnings and errors
@@ -763,6 +795,11 @@ typedef double mp_float_t;
 #define MICROPY_VFS_FAT (0)
 #endif
 
+// 1 when building C code for native mpy files. 0 otherwise.
+#ifndef MICROPY_ENABLE_DYNRUNTIME
+#define MICROPY_ENABLE_DYNRUNTIME (0)
+#endif
+
 /*****************************************************************************/
 /* Fine control over Python builtins, classes, modules, etc                  */
 
@@ -861,6 +898,11 @@ typedef double mp_float_t;
 #define MICROPY_PY_BUILTINS_MEMORYVIEW (0)
 #endif
 
+// Whether to support memoryview.itemsize attribute
+#ifndef MICROPY_PY_BUILTINS_MEMORYVIEW_ITEMSIZE
+#define MICROPY_PY_BUILTINS_MEMORYVIEW_ITEMSIZE (0)
+#endif
+
 // Whether to support set object
 #ifndef MICROPY_PY_BUILTINS_SET
 #define MICROPY_PY_BUILTINS_SET (1)
@@ -901,14 +943,14 @@ typedef double mp_float_t;
 #define MICROPY_PY_BUILTINS_RANGE_BINOP (0)
 #endif
 
+// Support for callling next() with second argument
+#ifndef MICROPY_PY_BUILTINS_NEXT2
+#define MICROPY_PY_BUILTINS_NEXT2 (0)
+#endif
+
 // Whether to support rounding of integers (incl bignum); eg round(123,-1)=120
 #ifndef MICROPY_PY_BUILTINS_ROUND_INT
 #define MICROPY_PY_BUILTINS_ROUND_INT (0)
-#endif
-
-// Whether to support timeout exceptions (like socket.timeout)
-#ifndef MICROPY_PY_BUILTINS_TIMEOUTERROR
-#define MICROPY_PY_BUILTINS_TIMEOUTERROR (0)
 #endif
 
 // Whether to support complete set of special methods for user
@@ -1076,6 +1118,11 @@ typedef double mp_float_t;
 #define MICROPY_PY_MATH_FACTORIAL (0)
 #endif
 
+// Whether to provide math.isclose function
+#ifndef MICROPY_PY_MATH_ISCLOSE
+#define MICROPY_PY_MATH_ISCLOSE (0)
+#endif
+
 // Whether to provide "cmath" module
 #ifndef MICROPY_PY_CMATH
 #define MICROPY_PY_CMATH (0)
@@ -1156,6 +1203,16 @@ typedef double mp_float_t;
 // Whether to provide "sys.exit" function
 #ifndef MICROPY_PY_SYS_EXIT
 #define MICROPY_PY_SYS_EXIT (1)
+#endif
+
+// Whether to provide "sys.atexit" function (MicroPython extension)
+#ifndef MICROPY_PY_SYS_ATEXIT
+#define MICROPY_PY_SYS_ATEXIT (0)
+#endif
+
+// Whether to provide "sys.settrace" function
+#ifndef MICROPY_PY_SYS_SETTRACE
+#define MICROPY_PY_SYS_SETTRACE (0)
 #endif
 
 // Whether to provide "sys.getsizeof" function
@@ -1250,6 +1307,10 @@ typedef double mp_float_t;
 #define MICROPY_PY_URE (0)
 #endif
 
+#ifndef MICROPY_PY_URE_DEBUG
+#define MICROPY_PY_URE_DEBUG (0)
+#endif
+
 #ifndef MICROPY_PY_URE_MATCH_GROUPS
 #define MICROPY_PY_URE_MATCH_GROUPS (0)
 #endif
@@ -1291,6 +1352,11 @@ typedef double mp_float_t;
 #define MICROPY_PY_UCRYPTOLIB (0)
 #endif
 
+// Depends on MICROPY_PY_UCRYPTOLIB
+#ifndef MICROPY_PY_UCRYPTOLIB_CTR
+#define MICROPY_PY_UCRYPTOLIB_CTR (0)
+#endif
+
 #ifndef MICROPY_PY_UCRYPTOLIB_CONSTS
 #define MICROPY_PY_UCRYPTOLIB_CONSTS (0)
 #endif
@@ -1313,33 +1379,6 @@ typedef double mp_float_t;
 #define MICROPY_PY_URANDOM_EXTRA_FUNCS (0)
 #endif
 
-#ifndef MICROPY_PY_MACHINE
-#define MICROPY_PY_MACHINE (0)
-#endif
-
-// Whether to include: time_pulse_us
-#ifndef MICROPY_PY_MACHINE_PULSE
-#define MICROPY_PY_MACHINE_PULSE (0)
-#endif
-
-#ifndef MICROPY_PY_MACHINE_I2C
-#define MICROPY_PY_MACHINE_I2C (0)
-#endif
-
-#ifndef MICROPY_PY_MACHINE_SPI
-#define MICROPY_PY_MACHINE_SPI (0)
-#endif
-
-#ifndef MICROPY_PY_USSL
-#define MICROPY_PY_USSL (0)
-// Whether to add finaliser code to ussl objects
-#define MICROPY_PY_USSL_FINALISER (0)
-#endif
-
-#ifndef MICROPY_PY_WEBSOCKET
-#define MICROPY_PY_WEBSOCKET (0)
-#endif
-
 #ifndef MICROPY_PY_FRAMEBUF
 #define MICROPY_PY_FRAMEBUF (0)
 #endif
@@ -1348,42 +1387,20 @@ typedef double mp_float_t;
 #define MICROPY_PY_BTREE (0)
 #endif
 
-#ifndef MICROPY_PY_OS_DUPTERM
-#define MICROPY_PY_OS_DUPTERM (0)
-#endif
-
-#ifndef MICROPY_PY_LWIP
-#define MICROPY_PY_LWIP (0)
-#endif
-
-#ifndef MICROPY_PY_LWIP_SLIP
-#define MICROPY_PY_LWIP_SLIP (0)
-#endif
-
 #ifndef MICROPY_HW_ENABLE_USB
 #define MICROPY_HW_ENABLE_USB (0)
 #endif
-
-#ifndef MICROPY_PY_WEBREPL
-#define MICROPY_PY_WEBREPL (0)
-#endif
-
 /*****************************************************************************/
 /* Hooks for a port to add builtins                                          */
 
-// Additional builtin function definitions - see builtintables.c:builtin_object_table for format.
+// Additional builtin function definitions - see modbuiltins.c:mp_module_builtins_globals_table for format.
 #ifndef MICROPY_PORT_BUILTINS
 #define MICROPY_PORT_BUILTINS
 #endif
 
-// Additional builtin module definitions - see builtintables.c:builtin_module_table for format.
+// Additional builtin module definitions - see objmodule.c:mp_builtin_module_table for format.
 #ifndef MICROPY_PORT_BUILTIN_MODULES
 #define MICROPY_PORT_BUILTIN_MODULES
-#endif
-
-// Any module weak links - see builtintables.c:mp_builtin_module_weak_links_table.
-#ifndef MICROPY_PORT_BUILTIN_MODULE_WEAK_LINKS
-#define MICROPY_PORT_BUILTIN_MODULE_WEAK_LINKS
 #endif
 
 // Additional constant definitions for the compiler - see compile.c:mp_constants_table.
@@ -1559,6 +1576,27 @@ typedef double mp_float_t;
 #else
 #define MP_HTOBE32(x) (x)
 #define MP_BE32TOH(x) (x)
+#endif
+#endif
+
+// Warning categories are by default implemented as strings, though
+// hook is left for a port to define them as something else.
+#if MICROPY_WARNINGS_CATEGORY
+#ifndef MP_WARN_CAT
+#define MP_WARN_CAT(x) #x
+#endif
+#else
+#undef MP_WARN_CAT
+#define MP_WARN_CAT(x) (NULL)
+#endif
+
+// Feature dependency check.
+#if MICROPY_PY_SYS_SETTRACE
+#if !MICROPY_PERSISTENT_CODE_SAVE
+#error "MICROPY_PY_SYS_SETTRACE requires MICROPY_PERSISTENT_CODE_SAVE to be enabled"
+#endif
+#if MICROPY_COMP_CONST
+#error "MICROPY_PY_SYS_SETTRACE requires MICROPY_COMP_CONST to be disabled"
 #endif
 #endif
 

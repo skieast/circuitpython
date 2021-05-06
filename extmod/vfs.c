@@ -17,6 +17,10 @@
 #include "extmod/vfs_fat.h"
 #endif
 
+#if MICROPY_VFS_LFS1 || MICROPY_VFS_LFS2
+#include "extmod/vfs_lfs.h"
+#endif
+
 #if defined(MICROPY_VFS_POSIX) && MICROPY_VFS_POSIX
 #include "extmod/vfs_posix.h"
 #endif
@@ -136,6 +140,44 @@ mp_import_stat_t mp_vfs_import_stat(const char *path) {
     }
 }
 
+STATIC mp_obj_t mp_vfs_autodetect(mp_obj_t bdev_obj) {
+    #if MICROPY_VFS_LFS1 || MICROPY_VFS_LFS2
+    nlr_buf_t nlr;
+    if (nlr_push(&nlr) == 0) {
+        mp_obj_t vfs = MP_OBJ_NULL;
+        mp_vfs_blockdev_t blockdev;
+        mp_vfs_blockdev_init(&blockdev, bdev_obj);
+        uint8_t buf[44];
+        mp_vfs_blockdev_read_ext(&blockdev, 0, 8, sizeof(buf), buf);
+        #if MICROPY_VFS_LFS1
+        if (memcmp(&buf[32], "littlefs", 8) == 0) {
+            // LFS1
+            vfs = mp_type_vfs_lfs1.make_new(&mp_type_vfs_lfs1, 1, &bdev_obj, NULL);
+            nlr_pop();
+            return vfs;
+        }
+        #endif
+        #if MICROPY_VFS_LFS2
+        if (memcmp(&buf[0], "littlefs", 8) == 0) {
+            // LFS2
+            vfs = mp_type_vfs_lfs2.make_new(&mp_type_vfs_lfs2, 1, &bdev_obj, NULL);
+            nlr_pop();
+            return vfs;
+        }
+        #endif
+        nlr_pop();
+    } else {
+        // Ignore exception (eg block device doesn't support extended readblocks)
+    }
+    #endif
+
+    #if MICROPY_VFS_FAT
+    return mp_fat_vfs_type.make_new(&mp_fat_vfs_type, 1, &bdev_obj, NULL);
+    #endif
+
+    return bdev_obj;
+}
+
 mp_obj_t mp_vfs_mount(size_t n_args, const mp_obj_t *pos_args, mp_map_t *kw_args) {
     enum { ARG_readonly, ARG_mkfs };
     static const mp_arg_t allowed_args[] = {
@@ -158,10 +200,7 @@ mp_obj_t mp_vfs_mount(size_t n_args, const mp_obj_t *pos_args, mp_map_t *kw_args
     if (dest[0] == MP_OBJ_NULL) {
         // Input object has no mount method, assume it's a block device and try to
         // auto-detect the filesystem and create the corresponding VFS entity.
-        // (At the moment we only support FAT filesystems.)
-        #if MICROPY_VFS_FAT
-        vfs_obj = mp_fat_vfs_type.make_new(&mp_fat_vfs_type, 1, &vfs_obj, NULL);
-        #endif
+        vfs_obj = mp_vfs_autodetect(vfs_obj);
     }
 
     // create new object
@@ -207,7 +246,7 @@ mp_obj_t mp_vfs_umount(mp_obj_t mnt_in) {
     mp_vfs_mount_t *vfs = NULL;
     size_t mnt_len;
     const char *mnt_str = NULL;
-    if (MP_OBJ_IS_STR(mnt_in)) {
+    if (mp_obj_is_str(mnt_in)) {
         mnt_str = mp_obj_str_get_data(mnt_in, &mnt_len);
     }
     for (mp_vfs_mount_t **vfsp = &MP_STATE_VM(vfs_mount_table); *vfsp != NULL; vfsp = &(*vfsp)->next) {
@@ -250,7 +289,7 @@ mp_obj_t mp_vfs_open(size_t n_args, const mp_obj_t *pos_args, mp_map_t *kw_args)
 
     #if defined(MICROPY_VFS_POSIX) && MICROPY_VFS_POSIX
     // If the file is an integer then delegate straight to the POSIX handler
-    if (MP_OBJ_IS_SMALL_INT(args[ARG_file].u_obj)) {
+    if (mp_obj_is_small_int(args[ARG_file].u_obj)) {
         return mp_vfs_posix_file_open(&mp_type_textio, args[ARG_file].u_obj, args[ARG_mode].u_obj);
     }
     #endif

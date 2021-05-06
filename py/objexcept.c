@@ -4,6 +4,7 @@
  * The MIT License (MIT)
  *
  * SPDX-FileCopyrightText: Copyright (c) 2013, 2014 Damien P. George
+ * SPDX-FileCopyrightText: Copyright (c) 2014-2016 Paul Sokolovsky
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -102,11 +103,6 @@ mp_obj_t mp_alloc_emergency_exception_buf(mp_obj_t size_in) {
 #endif
 #endif  // MICROPY_ENABLE_EMERGENCY_EXCEPTION_BUF
 
-// Instance of GeneratorExit exception - needed by generator.close()
-// This would belong to objgenerator.c, but to keep mp_obj_exception_t
-// definition module-private so far, have it here.
-const mp_obj_exception_t mp_const_GeneratorExit_obj = {{&mp_type_GeneratorExit}, 0, 0, NULL, (mp_obj_tuple_t *)&mp_const_empty_tuple_obj};
-
 void mp_obj_exception_print(const mp_print_t *print, mp_obj_t o_in, mp_print_kind_t kind) {
     mp_obj_exception_t *o = MP_OBJ_TO_PTR(o_in);
     mp_print_kind_t k = kind & ~PRINT_EXC_SUBCLASS;
@@ -124,7 +120,7 @@ void mp_obj_exception_print(const mp_print_t *print, mp_obj_t o_in, mp_print_kin
             mp_print_str(print, "");
             return;
         }
-        if (MP_OBJ_IS_SMALL_INT(o->args->items[0]) &&
+        if (mp_obj_is_small_int(o->args->items[0]) &&
             mp_obj_is_subclass_fast(MP_OBJ_FROM_PTR(o->base.type), MP_OBJ_FROM_PTR(&mp_type_OSError)) &&
             o->args->len <= 2) {
             // try to provide a nice OSError error message
@@ -463,9 +459,45 @@ mp_obj_t mp_obj_new_exception_msg_vlist(const mp_obj_type_t *exc_type, const com
     return mp_obj_exception_make_new(exc_type, 1, &arg, NULL);
 }
 
+mp_obj_t mp_obj_new_exception_msg_str(const mp_obj_type_t *exc_type, const char *msg) {
+    assert(msg != NULL);
+
+    // Check that the given type is an exception type
+    assert(exc_type->make_new == mp_obj_exception_make_new);
+
+    // Try to allocate memory for the message
+    mp_obj_str_t *o_str = m_new_obj_maybe(mp_obj_str_t);
+
+    #if MICROPY_ENABLE_EMERGENCY_EXCEPTION_BUF
+    // If memory allocation failed and there is an emergency buffer then try to use
+    // that buffer to store the string object and its data (at least 16 bytes for
+    // the string data), reserving room at the start for the traceback and 1-tuple.
+    if (o_str == NULL
+        && mp_emergency_exception_buf_size >= EMG_BUF_STR_OFFSET + sizeof(mp_obj_str_t) + 16) {
+        o_str = (mp_obj_str_t *)((uint8_t *)MP_STATE_VM(mp_emergency_exception_buf)
+            + EMG_BUF_STR_OFFSET);
+    }
+    #endif
+
+    if (o_str == NULL) {
+        // No memory for the string object so create the exception with no args
+        return mp_obj_exception_make_new(exc_type, 0, 0, NULL);
+    }
+
+    // Assume the message is statically allocated.
+    o_str->len = strlen(msg);
+    o_str->data = (const byte *)msg;
+
+    // Create the string object and call mp_obj_exception_make_new to create the exception
+    o_str->base.type = &mp_type_str;
+    o_str->hash = qstr_compute_hash(o_str->data, o_str->len);
+    mp_obj_t arg = MP_OBJ_FROM_PTR(o_str);
+    return mp_obj_exception_make_new(exc_type, 1, &arg, NULL);
+}
+
 // return true if the given object is an exception type
 bool mp_obj_is_exception_type(mp_obj_t self_in) {
-    if (MP_OBJ_IS_TYPE(self_in, &mp_type_type)) {
+    if (mp_obj_is_type(self_in, &mp_type_type)) {
         // optimisation when self_in is a builtin exception
         mp_obj_type_t *self = MP_OBJ_TO_PTR(self_in);
         if (self->make_new == mp_obj_exception_make_new) {

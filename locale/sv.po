@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-01-04 12:55-0600\n"
-"PO-Revision-Date: 2021-04-23 12:37+0000\n"
+"PO-Revision-Date: 2021-05-05 18:42+0000\n"
 "Last-Translator: Jonny Bergdahl <jonny@bergdahl.it>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: sv\n"
@@ -358,7 +358,7 @@ msgstr "Alla händelsekanaler används"
 msgid "All state machines in use"
 msgstr "Alla tillståndsmaskiner används"
 
-#: ports/atmel-samd/audio_dma.c ports/atmel-samd/common-hal/audiobusio/PDMIn.c
+#: ports/atmel-samd/audio_dma.c
 msgid "All sync event channels in use"
 msgstr "Alla händelsekanaler används"
 
@@ -448,6 +448,10 @@ msgstr "Försök att tilldela %d block"
 #: supervisor/shared/safe_mode.c
 msgid "Attempted heap allocation when VM not running."
 msgstr "Försök till heap-allokering när den virtuella maskinen inte är igång."
+
+#: shared-bindings/wifi/Radio.c
+msgid "AuthMode.OPEN is not used with password"
+msgstr "AuthMode.OPEN används inte med lösenord"
 
 #: shared-bindings/wifi/Radio.c
 msgid "Authentication failure"
@@ -694,6 +698,7 @@ msgid "Cannot vary frequency on a timer that is already in use"
 msgstr "Det går inte att ändra frekvensen på en timer som redan används"
 
 #: ports/esp32s2/common-hal/alarm/pin/PinAlarm.c
+#: ports/nrf/common-hal/alarm/pin/PinAlarm.c
 msgid "Cannot wake on pin edge. Only level."
 msgstr "Kan inte vakna på nivåskift, enbart nivå."
 
@@ -753,10 +758,6 @@ msgstr ""
 #: py/persistentcode.c
 msgid "Corrupt .mpy file"
 msgstr "Skadad .mpy-fil"
-
-#: py/emitglue.c
-msgid "Corrupt raw code"
-msgstr "Korrupt rå kod"
 
 #: ports/cxd56/common-hal/camera/Camera.c
 msgid "Could not initialize Camera"
@@ -1206,6 +1207,7 @@ msgstr "Ogiltig %q"
 
 #: ports/atmel-samd/common-hal/audiobusio/I2SOut.c
 #: ports/atmel-samd/common-hal/audiobusio/PDMIn.c
+#: ports/atmel-samd/common-hal/imagecapture/ParallelImageCapture.c
 #: ports/mimxrt10xx/common-hal/busio/UART.c
 msgid "Invalid %q pin"
 msgstr "Ogiltig %q-pinne"
@@ -1219,6 +1221,10 @@ msgstr "Ogiltigt val av %q pinne"
 #: ports/stm/common-hal/analogio/AnalogIn.c
 msgid "Invalid ADC Unit value"
 msgstr "Ogiltigt ADC-enhetsvärde"
+
+#: ports/esp32s2/common-hal/wifi/Radio.c
+msgid "Invalid AuthMode"
+msgstr "Ogiltig AuthMode"
 
 #: shared-module/displayio/OnDiskBitmap.c
 msgid "Invalid BMP file"
@@ -1276,6 +1282,11 @@ msgstr "Ogiltig inspelningsperiod. Giltigt intervall: 1 - 500"
 msgid "Invalid channel count"
 msgstr "Ogiltigt kanalantal"
 
+#: ports/atmel-samd/common-hal/imagecapture/ParallelImageCapture.c
+#, c-format
+msgid "Invalid data_count %d"
+msgstr "Ogiltig data_count %d"
+
 #: shared-bindings/digitalio/DigitalInOut.c
 msgid "Invalid direction."
 msgstr "Ogiltig riktning."
@@ -1308,7 +1319,8 @@ msgstr "Ogiltig fas"
 #: ports/atmel-samd/common-hal/audioio/AudioOut.c
 #: ports/atmel-samd/common-hal/touchio/TouchIn.c
 #: ports/esp32s2/common-hal/alarm/touch/TouchAlarm.c
-#: ports/esp32s2/common-hal/touchio/TouchIn.c shared-bindings/pwmio/PWMOut.c
+#: ports/esp32s2/common-hal/touchio/TouchIn.c
+#: ports/nrf/common-hal/alarm/pin/PinAlarm.c shared-bindings/pwmio/PWMOut.c
 #: shared-module/rgbmatrix/RGBMatrix.c
 msgid "Invalid pin"
 msgstr "Ogiltig pinne"
@@ -1488,7 +1500,7 @@ msgstr "NLR jump misslyckades. Troligen korrupt minne."
 msgid "NVS Error"
 msgstr "NVS-fel"
 
-#: py/parse.c
+#: py/qstr.c
 msgid "Name too long"
 msgstr "Name är för långt"
 
@@ -1692,6 +1704,7 @@ msgid "Only one TouchAlarm can be set in deep sleep."
 msgstr "Endast ett TouchAlarm kan ställas in för djupsömn."
 
 #: ports/esp32s2/common-hal/alarm/time/TimeAlarm.c
+#: ports/nrf/common-hal/alarm/time/TimeAlarm.c
 msgid "Only one alarm.time alarm can be set."
 msgstr "Endast ett alarm.time kan ställas in."
 
@@ -2573,10 +2586,6 @@ msgstr "buffert för liten för begärd längd"
 msgid "buttons must be digitalio.DigitalInOut"
 msgstr "buttons måste vara digitalio.DigitalInOut"
 
-#: py/vm.c
-msgid "byte code not implemented"
-msgstr "byte-kod inte implementerad"
-
 #: shared-bindings/_pixelbuf/PixelBuf.c
 msgid "byteorder is not a string"
 msgstr "byteorder är inte en sträng"
@@ -2613,10 +2622,6 @@ msgstr "kan bara ha upp till 4 parametrar för Thumbs assembly"
 #: py/emitinlinextensa.c
 msgid "can only have up to 4 parameters to Xtensa assembly"
 msgstr "kan bara ha upp till 4 parametrar att Xtensa assembly"
-
-#: py/persistentcode.c
-msgid "can only save bytecode"
-msgstr "kan bara spara bytecode"
 
 #: py/objtype.c
 msgid "can't add special method to already-subclassed class"
@@ -2686,10 +2691,6 @@ msgstr "kan inte ladda från '%q'"
 #: py/emitnative.c
 msgid "can't load with '%q' index"
 msgstr "kan inte ladda med '%q' index"
-
-#: py/objgenerator.c
-msgid "can't pend throw to just-started generator"
-msgstr "kan inte 'pend throw' för nystartad generator"
 
 #: py/objgenerator.c
 msgid "can't send non-None value to a just-started generator"
@@ -2846,6 +2847,11 @@ msgstr "data måste vara itererbar"
 #: extmod/ulab/code/scipy/optimize/optimize.c
 msgid "data must be of equal length"
 msgstr "data måste vara av samma längd"
+
+#: ports/atmel-samd/common-hal/imagecapture/ParallelImageCapture.c
+#, c-format
+msgid "data pin #%d in use"
+msgstr "data pin #%d används redan"
 
 #: extmod/ulab/code/ndarray.c
 msgid "data type not understood"
@@ -3042,6 +3048,10 @@ msgstr "Argumentet flip måste vara en ndarray"
 msgid "float too big"
 msgstr "flyttalet för stort"
 
+#: py/nativeglue.c
+msgid "float unsupported"
+msgstr "float stöds ej"
+
 #: shared-bindings/_stage/Text.c
 msgid "font must be 2048 bytes long"
 msgstr "typsnitt måste vara 2048 bytes långt"
@@ -3110,7 +3120,7 @@ msgstr "generatorn kör redan"
 msgid "generator ignored GeneratorExit"
 msgstr "generatorn ignorerade GeneratorExit"
 
-#: py/objgenerator.c
+#: py/objgenerator.c py/runtime.c
 msgid "generator raised StopIteration"
 msgstr "generator kastade StopIteration"
 
@@ -3129,6 +3139,18 @@ msgstr "identifieraren omdefinierad till global"
 #: py/compile.c
 msgid "identifier redefined as nonlocal"
 msgstr "identifieraren omdefinierad som icke-lokal"
+
+#: py/compile.c
+msgid "import * not at module level"
+msgstr "import * inte på modulnivå"
+
+#: py/persistentcode.c
+msgid "incompatible .mpy file"
+msgstr "inkompatibel .mpy-fil"
+
+#: py/persistentcode.c
+msgid "incompatible native .mpy architecture"
+msgstr "inkompatibel nativ .mpy-arkitektur"
 
 #: py/objstr.c
 msgid "incomplete format"
@@ -3249,6 +3271,10 @@ msgstr "interp är definierad för 1D-matriser med samma längd"
 msgid "interval must be in range %s-%s"
 msgstr "interval måste vara i intervallet %s-%s"
 
+#: py/compile.c
+msgid "invalid architecture"
+msgstr "ogiltig arkitektur"
+
 #: lib/netutils/netutils.c
 msgid "invalid arguments"
 msgstr "ogiltiga argument"
@@ -3258,17 +3284,9 @@ msgstr "ogiltiga argument"
 msgid "invalid bits_per_pixel %d, must be, 1, 4, 8, 16, 24, or 32"
 msgstr "ogiltig bits_per_pixel %d, måste vara 1, 4, 8, 16, 24 eller 32"
 
-#: extmod/modussl_axtls.c
-msgid "invalid cert"
-msgstr "ogiltigt certifikat"
-
 #: py/compile.c
 msgid "invalid decorator"
 msgstr "ogiltig dekorator"
-
-#: extmod/uos_dupterm.c
-msgid "invalid dupterm index"
-msgstr "ogiltigt dupterm index"
 
 #: shared-bindings/bitmaptools/__init__.c
 #, c-format
@@ -3291,10 +3309,6 @@ msgstr "ogiltig formatspecificerare"
 #: shared-bindings/wifi/Radio.c
 msgid "invalid hostname"
 msgstr "Ogiltigt värdnamn"
-
-#: extmod/modussl_axtls.c
-msgid "invalid key"
-msgstr "ogiltig nyckel"
 
 #: py/compile.c
 msgid "invalid micropython decorator"
@@ -3670,6 +3684,10 @@ msgstr "enbart sample_rate=16000 stöds"
 msgid "only slices with step=1 (aka None) are supported"
 msgstr "endast segment med steg=1 (aka Ingen) stöds"
 
+#: py/vm.c
+msgid "opcode"
+msgstr "opkod"
+
 #: extmod/ulab/code/ndarray.c extmod/ulab/code/numpy/compare/compare.c
 #: extmod/ulab/code/numpy/vector/vector.c
 msgid "operands could not be broadcast together"
@@ -3892,8 +3910,8 @@ msgid "sampling rate out of range"
 msgstr "samplingsfrekvens utanför räckvidden"
 
 #: py/modmicropython.c
-msgid "schedule stack full"
-msgstr "schemastack full"
+msgid "schedule queue full"
+msgstr "schemakön full"
 
 #: lib/utils/pyexec.c py/builtinimport.c
 msgid "script compilation not supported"
@@ -4309,6 +4327,36 @@ msgstr "zi måste vara av typ float"
 #: extmod/ulab/code/scipy/signal/signal.c
 msgid "zi must be of shape (n_section, 2)"
 msgstr "zi måste vara i formen (n_section, 2)"
+
+#~ msgid "Timeout waiting for DRDY"
+#~ msgstr "Timeout i väntan på DRDY"
+
+#~ msgid "Timeout waiting for VSYNC"
+#~ msgstr "Timeout i väntan på VSYNC"
+
+#~ msgid "byte code not implemented"
+#~ msgstr "byte-kod inte implementerad"
+
+#~ msgid "can't pend throw to just-started generator"
+#~ msgstr "kan inte 'pend throw' för nystartad generator"
+
+#~ msgid "invalid dupterm index"
+#~ msgstr "ogiltigt dupterm index"
+
+#~ msgid "schedule stack full"
+#~ msgstr "schemastack full"
+
+#~ msgid "Corrupt raw code"
+#~ msgstr "Korrupt rå kod"
+
+#~ msgid "can only save bytecode"
+#~ msgstr "kan bara spara bytecode"
+
+#~ msgid "invalid cert"
+#~ msgstr "ogiltigt certifikat"
+
+#~ msgid "invalid key"
+#~ msgstr "ogiltig nyckel"
 
 #~ msgid "Viper functions don't currently support more than 4 arguments"
 #~ msgstr "Viper-funktioner stöder för närvarande inte mer än fyra argument"

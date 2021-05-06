@@ -3,6 +3,8 @@
 # fmt: off
 
 
+
+
 def f():
     # constants
     a = None + False + True
@@ -119,7 +121,8 @@ def f():
     # import
     import a
     from a import b
-    from a import *
+
+    # from sys import * # tested at module scope
 
     # raise
     raise
@@ -163,3 +166,7 @@ del Class
 # load super method
 def f(self):
     super().f()
+
+
+# import * (needs to be in module scope)
+from sys import *

@@ -4,7 +4,7 @@
  * The MIT License (MIT)
  *
  * SPDX-FileCopyrightText: Copyright (c) 2013, 2014 Damien P. George
- * Copyright (c) 2014 Paul Sokolovsky
+ * SPDX-FileCopyrightText: Copyright (c) 2014-2017 Paul Sokolovsky
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -72,9 +72,9 @@ STATIC mp_uint_t stringio_read(mp_obj_t o_in, void *buf, mp_uint_t size, int *er
 STATIC void stringio_copy_on_write(mp_obj_stringio_t *o) {
     const void *buf = o->vstr->buf;
     o->vstr->buf = m_new(char, o->vstr->len);
-    memcpy(o->vstr->buf, buf, o->vstr->len);
     o->vstr->fixed_buf = false;
     o->ref_obj = MP_OBJ_NULL;
+    memcpy(o->vstr->buf, buf, o->vstr->len);
 }
 
 STATIC mp_uint_t stringio_write(mp_obj_t o_in, const void *buf, mp_uint_t size, int *errcode) {
@@ -198,7 +198,7 @@ STATIC mp_obj_t stringio_make_new(const mp_obj_type_t *type_in, size_t n_args, c
     if (n_args > 0) {
         mp_get_buffer_raise(args[0], &bufinfo, MP_BUFFER_READ);
 
-        if (MP_OBJ_IS_STR_OR_BYTES(args[0])) {
+        if (mp_obj_is_str_or_bytes(args[0])) {
             o->vstr = m_new_obj(vstr_t);
             vstr_init_fixed_buf(o->vstr, bufinfo.len, bufinfo.buf);
             o->vstr->len = bufinfo.len;
@@ -243,13 +243,6 @@ STATIC const mp_stream_p_t stringio_stream_p = {
     .is_text = true,
 };
 
-STATIC const mp_stream_p_t bytesio_stream_p = {
-    MP_PROTO_IMPLEMENT(MP_QSTR_protocol_stream)
-    .read = stringio_read,
-    .write = stringio_write,
-    .ioctl = stringio_ioctl,
-};
-
 const mp_obj_type_t mp_type_stringio = {
     { &mp_type_type },
     .name = MP_QSTR_StringIO,
@@ -262,6 +255,13 @@ const mp_obj_type_t mp_type_stringio = {
 };
 
 #if MICROPY_PY_IO_BYTESIO
+STATIC const mp_stream_p_t bytesio_stream_p = {
+    MP_PROTO_IMPLEMENT(MP_QSTR_protocol_stream)
+    .read = stringio_read,
+    .write = stringio_write,
+    .ioctl = stringio_ioctl,
+};
+
 const mp_obj_type_t mp_type_bytesio = {
     { &mp_type_type },
     .name = MP_QSTR_BytesIO,

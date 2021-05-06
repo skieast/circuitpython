@@ -77,12 +77,6 @@ STATIC mp_uint_t fdfile_read(mp_obj_t o_in, void *buf, mp_uint_t size, int *errc
 STATIC mp_uint_t fdfile_write(mp_obj_t o_in, const void *buf, mp_uint_t size, int *errcode) {
     mp_obj_fdfile_t *o = MP_OBJ_TO_PTR(o_in);
     check_fd_is_open(o);
-    #if MICROPY_PY_OS_DUPTERM
-    if (o->fd <= STDERR_FILENO) {
-        mp_hal_stdout_tx_strn(buf, size);
-        return size;
-    }
-    #endif
     mp_int_t r = write(o->fd, buf, size);
     while (r == -1 && errno == EINTR) {
         if (MP_STATE_VM(mp_pending_exception) != MP_OBJ_NULL) {
@@ -193,7 +187,7 @@ STATIC mp_obj_t fdfile_open(const mp_obj_type_t *type, mp_arg_val_t *args) {
 
     mp_obj_t fid = args[0].u_obj;
 
-    if (MP_OBJ_IS_SMALL_INT(fid)) {
+    if (mp_obj_is_small_int(fid)) {
         o->fd = MP_OBJ_SMALL_INT_VALUE(fid);
         return MP_OBJ_FROM_PTR(o);
     }

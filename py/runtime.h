@@ -73,7 +73,7 @@ void mp_handle_pending_tail(mp_uint_t atomic_state);
 void mp_sched_lock(void);
 void mp_sched_unlock(void);
 static inline unsigned int mp_sched_num_pending(void) {
-    return MP_STATE_VM(sched_sp);
+    return MP_STATE_VM(sched_len);
 }
 bool mp_sched_schedule(mp_obj_t function, mp_obj_t arg);
 #endif
@@ -165,6 +165,8 @@ NORETURN void mp_raise_arg1(const mp_obj_type_t *exc_type, mp_obj_t arg);
 NORETURN void mp_raise_msg(const mp_obj_type_t *exc_type, const compressed_string_t *msg);
 NORETURN void mp_raise_msg_varg(const mp_obj_type_t *exc_type, const compressed_string_t *fmt, ...);
 NORETURN void mp_raise_msg_vlist(const mp_obj_type_t *exc_type, const compressed_string_t *fmt, va_list argptr);
+// Only use this string version in native mpy files. Otherwise, use the compressed string version.
+NORETURN void mp_raise_msg_str(const mp_obj_type_t *exc_type, const char *msg);
 NORETURN void mp_raise_ValueError(const compressed_string_t *msg);
 NORETURN void mp_raise_ValueError_varg(const compressed_string_t *fmt, ...);
 NORETURN void mp_raise_TypeError(const compressed_string_t *msg);
@@ -197,17 +199,17 @@ NORETURN void mp_raise_recursion_depth(void);
 #endif
 
 // helper functions for native/viper code
-mp_uint_t mp_convert_obj_to_native(mp_obj_t obj, mp_uint_t type);
-mp_obj_t mp_convert_native_to_obj(mp_uint_t val, mp_uint_t type);
-mp_obj_dict_t *mp_native_swap_globals(mp_obj_dict_t *new_globals);
-mp_obj_t mp_native_call_function_n_kw(mp_obj_t fun_in, size_t n_args_kw, const mp_obj_t *args);
-void mp_native_raise(mp_obj_t o);
+int mp_native_type_from_qstr(qstr qst);
+mp_uint_t mp_native_from_obj(mp_obj_t obj, mp_uint_t type);
+mp_obj_t mp_native_to_obj(mp_uint_t val, mp_uint_t type);
 
 #define mp_sys_path (MP_OBJ_FROM_PTR(&MP_STATE_VM(mp_sys_path_obj)))
 #define mp_sys_argv (MP_OBJ_FROM_PTR(&MP_STATE_VM(mp_sys_argv_obj)))
 
 #if MICROPY_WARNINGS
-void mp_warning(const char *msg, ...);
+#ifndef mp_warning
+void mp_warning(const char *category, const char *msg, ...);
+#endif
 #else
 #define mp_warning(...)
 #endif
