@@ -4,10 +4,7 @@ except ImportError:
     print("SKIP")
     raise SystemExit
 
-desc = {
-    "f1": 0 | uctypes.UINT32,
-    "f2": 4 | uctypes.UINT8,
-}
+desc = {"f1": 0 | uctypes.UINT32, "f2": 4 | uctypes.UINT8}
 
 
 # uctypes.NATIVE is default
