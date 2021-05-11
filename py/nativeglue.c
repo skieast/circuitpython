@@ -32,6 +32,7 @@
 #include "py/runtime.h"
 #include "py/smallint.h"
 #include "py/nativeglue.h"
+#include "py/objtype.h"
 #include "py/gc.h"
 
 #if MICROPY_DEBUG_VERBOSE // print debugging info
@@ -118,13 +119,13 @@ mp_obj_t mp_native_to_obj(mp_uint_t val, mp_uint_t type) {
 mp_obj_t mp_obj_new_set(size_t n_args, mp_obj_t *items) {
     (void)n_args;
     (void)items;
-    mp_raise_msg(&mp_type_RuntimeError, "set unsupported");
+    mp_raise_msg(&mp_type_RuntimeError, MP_ERROR_TEXT("set unsupported"));
 }
 
 void mp_obj_set_store(mp_obj_t self_in, mp_obj_t item) {
     (void)self_in;
     (void)item;
-    mp_raise_msg(&mp_type_RuntimeError, "set unsupported");
+    mp_raise_msg(&mp_type_RuntimeError, MP_ERROR_TEXT("set unsupported"));
 }
 #endif
 
@@ -133,7 +134,7 @@ mp_obj_t mp_obj_new_slice(mp_obj_t ostart, mp_obj_t ostop, mp_obj_t ostep) {
     (void)ostart;
     (void)ostop;
     (void)ostep;
-    mp_raise_msg(&mp_type_RuntimeError, "slice unsupported");
+    mp_raise_msg(&mp_type_RuntimeError, MP_ERROR_TEXT("slice unsupported"));
 }
 #endif
 
@@ -227,53 +228,35 @@ STATIC bool mp_native_yield_from(mp_obj_t gen, mp_obj_t send_value, mp_obj_t *re
     return false;
 }
 
-#if MICROPY_PY_BUILTINS_FLOAT
-
-STATIC mp_obj_t mp_obj_new_float_from_f(float f) {
-    return mp_obj_new_float((mp_float_t)f);
-}
-
-STATIC mp_obj_t mp_obj_new_float_from_d(double d) {
-    return mp_obj_new_float((mp_float_t)d);
-}
-
-STATIC float mp_obj_get_float_to_f(mp_obj_t o) {
-    return (float)mp_obj_get_float(o);
-}
-
-STATIC double mp_obj_get_float_to_d(mp_obj_t o) {
-    return (double)mp_obj_get_float(o);
-}
-
-#else
+#if !MICROPY_PY_BUILTINS_FLOAT
 
 STATIC mp_obj_t mp_obj_new_float_from_f(float f) {
     (void)f;
-    mp_raise_msg(&mp_type_RuntimeError, translate("float unsupported"));
+    mp_raise_msg(&mp_type_RuntimeError, MP_ERROR_TEXT("float unsupported"));
 }
 
 STATIC mp_obj_t mp_obj_new_float_from_d(double d) {
     (void)d;
-    mp_raise_msg(&mp_type_RuntimeError, translate("float unsupported"));
+    mp_raise_msg(&mp_type_RuntimeError, MP_ERROR_TEXT("float unsupported"));
 }
 
 STATIC float mp_obj_get_float_to_f(mp_obj_t o) {
     (void)o;
-    mp_raise_msg(&mp_type_RuntimeError, translate("float unsupported"));
+    mp_raise_msg(&mp_type_RuntimeError, MP_ERROR_TEXT("float unsupported"));
 }
 
 STATIC double mp_obj_get_float_to_d(mp_obj_t o) {
     (void)o;
-    mp_raise_msg(&mp_type_RuntimeError, translate("float unsupported"));
+    mp_raise_msg(&mp_type_RuntimeError, MP_ERROR_TEXT("float unsupported"));
 }
 
 #endif
 
-// these must correspond to the respective enum in runtime0.h
+// these must correspond to the respective enum in nativeglue.h
 const mp_fun_table_t mp_fun_table = {
-    &mp_const_none_obj,
-    &mp_const_false_obj,
-    &mp_const_true_obj,
+    mp_const_none,
+    mp_const_false,
+    mp_const_true,
     mp_native_from_obj,
     mp_native_to_obj,
     mp_native_swap_globals,
@@ -346,6 +329,7 @@ const mp_fun_table_t mp_fun_table = {
     mp_obj_get_float_to_d,
     mp_get_buffer_raise,
     mp_get_stream_raise,
+    mp_obj_assert_native_inited,
     &mp_plat_print,
     &mp_type_type,
     &mp_type_str,

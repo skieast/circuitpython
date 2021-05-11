@@ -587,10 +587,10 @@ object instead of the pins themselves. This allows the calling code to provide
 any object with the appropriate methods such as an I2C expansion board.
 
 Another example is to expect a :py:class:`~digitalio.DigitalInOut` for a pin to
-toggle instead of a :py:class:`~microcontroller.Pin` from `board`. Taking in the
-:py:class:`~microcontroller.Pin` object alone would limit the driver to pins on
-the actual microcontroller instead of pins provided by another driver such as an
-IO expander.
+toggle instead of a :py:class:`~microcontroller.Pin` from :py:mod:`board`.
+Taking in the :py:class:`~microcontroller.Pin` object alone would limit the
+driver to pins on the actual microcontroller instead of pins provided by another
+driver such as an IO expander.
 
 Lots of small modules
 --------------------------------------------------------------------------------
@@ -653,6 +653,14 @@ You could other examples if needed featuring different
 functionalities of the library.
 If you add additional examples, be sure to include them in the ``examples.rst``. Naming of the examples
 files should use the name of the library followed by a description, using underscore to separate them.
+When using print statements you should use the ``" ".format()`` format, as there are particular boards
+that are not capable to use f-strings.
+
+.. code-block:: python
+
+  text_to_display = "World!"
+
+  print("Hello {}".format(text_to_display))
 
 Sensor properties and units
 --------------------------------------------------------------------------------
