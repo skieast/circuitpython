@@ -98,10 +98,7 @@ def preprocess():
         cpus = 1
     p = multiprocessing.dummy.Pool(cpus)
     with open(args.output[0], "wb") as out_file:
-        for flags, sources in (
-            (args.cflags, csources),
-            (args.cxxflags, cxxsources),
-        ):
+        for flags, sources in ((args.cflags, csources), (args.cxxflags, cxxsources)):
             batch_size = (len(sources) + cpus - 1) // cpus
             chunks = [sources[i : i + batch_size] for i in range(0, len(sources), batch_size or 1)]
             for output in p.imap(pp(flags), chunks):
