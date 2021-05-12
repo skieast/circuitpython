@@ -113,10 +113,7 @@ TOP = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 
 UNCRUSTIFY_CFG = os.path.join(TOP, "tools/uncrustify.cfg")
 
-C_EXTS = (
-    ".c",
-    ".h",
-)
+C_EXTS = (".c", ".h")
 PY_EXTS = (".py",)
 
 # Transform a filename argument relative to the current directory into one

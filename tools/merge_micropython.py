@@ -130,14 +130,7 @@ for t in tests_to_delete:
         pass
 
 
-libs_to_delete = [
-    "mynewt-nimble",
-    "nxp_driver",
-    "mbedtls",
-    "mbedtls_errors",
-    "asf4",
-    "btstack",
-]
+libs_to_delete = ["mynewt-nimble", "nxp_driver", "mbedtls", "mbedtls_errors", "asf4", "btstack"]
 for l in libs_to_delete:
     try:
         git.rm("-rf", "lib/" + l)
