@@ -6,7 +6,7 @@ msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-01-04 12:55-0600\n"
-"PO-Revision-Date: 2021-05-10 11:33+0000\n"
+"PO-Revision-Date: 2021-05-12 21:48+0000\n"
 "Last-Translator: Wellington Terumi Uemura <wellingtonuemura@gmail.com>\n"
 "Language-Team: \n"
 "Language: pt_BR\n"
@@ -743,8 +743,8 @@ msgstr ""
 "de segurança.\n"
 
 #: supervisor/shared/safe_mode.c
-msgid "CircuitPython was unable to allocate the heap.\n"
-msgstr "O CircuitPython não conseguiu alocar o heap.\n"
+msgid "CircuitPython was unable to allocate the heap."
+msgstr "O CircuitPython não conseguiu alocar o heap."
 
 #: shared-module/bitbangio/SPI.c
 msgid "Clock pin init failed."
@@ -873,6 +873,10 @@ msgstr "Pedaço de dados deve seguir o pedaço de cortes"
 #: ports/nrf/common-hal/_bleio/Adapter.c
 msgid "Data too large for advertisement packet"
 msgstr "Os dados são grandes demais para o pacote de publicidade"
+
+#: ports/stm/common-hal/alarm/pin/PinAlarm.c
+msgid "Deep sleep pins must use a rising edge with pulldown"
+msgstr ""
 
 #: shared-bindings/audiobusio/PDMIn.c
 msgid "Destination capacity is smaller than destination_length."
@@ -1712,6 +1716,10 @@ msgstr ""
 "O BMP descompactado é compatível apenas no formato Windows: o tamanho do "
 "cabeçalho é %d"
 
+#: ports/stm/common-hal/alarm/pin/PinAlarm.c
+msgid "Only edge detection is available on this hardware"
+msgstr ""
+
 #: shared-module/displayio/OnDiskBitmap.c
 #, c-format
 msgid ""
@@ -1727,6 +1735,7 @@ msgstr "Apenas um TouchAlarm pode ser colocado em deep sleep."
 
 #: ports/esp32s2/common-hal/alarm/time/TimeAlarm.c
 #: ports/nrf/common-hal/alarm/time/TimeAlarm.c
+#: ports/stm/common-hal/alarm/time/TimeAlarm.c
 msgid "Only one alarm.time alarm can be set."
 msgstr "Apenas um alarme alarm.time pode ser definido."
 
@@ -1806,6 +1815,10 @@ msgstr "O periférico está em uso"
 msgid "Permission denied"
 msgstr "Permissão negada"
 
+#: ports/stm/common-hal/alarm/pin/PinAlarm.c
+msgid "Pin cannot wake from Deep Sleep"
+msgstr ""
+
 #: ports/raspberrypi/bindings/rp2pio/StateMachine.c
 msgid "Pin count must be at least 1"
 msgstr "A contagem dos pinos deve ser com pelo menos 1"
@@ -1824,6 +1837,11 @@ msgstr "A contagem dos pinos é muito grande"
 msgid "Pin does not have ADC capabilities"
 msgstr "O pino não tem recursos de ADC"
 
+#: ports/stm/common-hal/alarm/pin/PinAlarm.c
+#: ports/stm/common-hal/pulseio/PulseIn.c
+msgid "Pin interrupt already in use"
+msgstr ""
+
 #: shared-bindings/adafruit_bus_device/SPIDevice.c
 #: shared-bindings/digitalio/DigitalInOut.c
 msgid "Pin is input only"
@@ -1836,10 +1854,6 @@ msgstr "O pino deve estar no canal B do PWM"
 #: ports/atmel-samd/common-hal/countio/Counter.c
 msgid "Pin must support hardware interrupts"
 msgstr "O pino deve ser compatível com as interrupções do hardware"
-
-#: ports/stm/common-hal/pulseio/PulseIn.c
-msgid "Pin number already reserved by EXTI"
-msgstr "Número do PIN já está reservado através da EXTI"
 
 #: shared-bindings/rgbmatrix/RGBMatrix.c
 #, c-format
@@ -2074,6 +2088,10 @@ msgstr ""
 msgid "Size not supported"
 msgstr "O tamanho não é suportado"
 
+#: ports/stm/common-hal/alarm/SleepMemory.c
+msgid "Sleep Memory not available"
+msgstr ""
+
 #: shared-bindings/alarm/SleepMemory.c shared-bindings/nvm/ByteArray.c
 msgid "Slice and value different lengths."
 msgstr "Fatie e avalie os diferentes comprimentos."
@@ -2225,6 +2243,10 @@ msgstr "Exibições demais"
 msgid "Total data to write is larger than %q"
 msgstr "O total dos dados que serão escritos é maior do que %q"
 
+#: ports/stm/common-hal/alarm/touch/TouchAlarm.c
+msgid "Touch alarms not available"
+msgstr ""
+
 #: py/obj.c
 msgid "Traceback (most recent call last):\n"
 msgstr "Traceback (a última chamada mais recente):\n"
@@ -2254,12 +2276,8 @@ msgid "UART write error"
 msgstr "Houve um erro na gravação UART"
 
 #: shared-module/usb_hid/Device.c
-msgid "USB Busy"
-msgstr "USB ocupada"
-
-#: shared-module/usb_hid/Device.c
-msgid "USB Error"
-msgstr "Erro na USB"
+msgid "USB busy"
+msgstr "USB ocupado"
 
 #: supervisor/shared/safe_mode.c
 msgid "USB devices need more endpoints than are available."
@@ -2269,6 +2287,10 @@ msgstr ""
 #: supervisor/shared/safe_mode.c
 msgid "USB devices specify too many interface names."
 msgstr "Os dispositivos USB definiram nomes demais para as interfaces."
+
+#: shared-module/usb_hid/Device.c
+msgid "USB error"
+msgstr "Erro na USB"
 
 #: shared-bindings/_bleio/UUID.c
 msgid "UUID integer value must be 0-0xffff"
@@ -3577,6 +3599,10 @@ msgstr "o nome '%q' não está definido"
 msgid "name not defined"
 msgstr "nome não definido"
 
+#: py/asmthumb.c
+msgid "native method too big"
+msgstr "o método nativo é grande demais"
+
 #: py/emitnative.c
 msgid "native yield"
 msgstr "rendimento nativo"
@@ -3617,6 +3643,10 @@ msgstr "nenhuma ligação para nonlocal foi encontrada"
 #: shared-module/msgpack/__init__.c
 msgid "no default packer"
 msgstr "nenhum empacotador padrão"
+
+#: extmod/modurandom.c
+msgid "no default seed"
+msgstr "nenhuma semente padrão"
 
 #: py/builtinimport.c
 msgid "no module named '%q'"
@@ -4193,6 +4223,10 @@ msgstr "dimensões demais"
 msgid "too many indices"
 msgstr "índices demais"
 
+#: py/asmthumb.c
+msgid "too many locals for native method"
+msgstr "locais demais para o método nativo"
+
 #: py/runtime.c
 #, c-format
 msgid "too many values to unpack (expected %d)"
@@ -4425,6 +4459,15 @@ msgstr "zi deve ser de um tipo float"
 #: extmod/ulab/code/scipy/signal/signal.c
 msgid "zi must be of shape (n_section, 2)"
 msgstr "zi deve estar na forma (n_section, 2)"
+
+#~ msgid "Pin number already reserved by EXTI"
+#~ msgstr "Número do PIN já está reservado através da EXTI"
+
+#~ msgid "USB Busy"
+#~ msgstr "USB ocupada"
+
+#~ msgid "USB Error"
+#~ msgstr "Erro na USB"
 
 #~ msgid "%q indices must be integers, not %q"
 #~ msgstr "Os indicadores %q devem ser inteiros, não %q"
@@ -4818,7 +4861,7 @@ msgstr "zi deve estar na forma (n_section, 2)"
 #~ msgstr "Rodando em modo seguro! Atualização automática está desligada.\n"
 
 #~ msgid "Running in safe mode! Not running saved code.\n"
-#~ msgstr "Rodando em modo seguro! Não está executando o código salvo.\n"
+#~ msgstr "Rodando em modo seguro! O código salvo não está em execução.\n"
 
 #~ msgid "__init__() should return None, not '%s'"
 #~ msgstr "O __init__() deve retornar Nenhum, não '%s'"

@@ -725,8 +725,8 @@ msgstr ""
 "przycisk resetowania. Naciśnij ponownie, aby wyjść z trybu awaryjnego.\n"
 
 #: supervisor/shared/safe_mode.c
-msgid "CircuitPython was unable to allocate the heap.\n"
-msgstr "CircuitPython nie mógł przydzielić sterty.\n"
+msgid "CircuitPython was unable to allocate the heap."
+msgstr "CircuitPython nie mógł przydzielić sterty."
 
 #: shared-module/bitbangio/SPI.c
 msgid "Clock pin init failed."
@@ -856,6 +856,10 @@ msgstr "Fragment danych musi następować po fragmencie fmt"
 #: ports/nrf/common-hal/_bleio/Adapter.c
 msgid "Data too large for advertisement packet"
 msgstr "Zbyt dużo danych pakietu rozgłoszeniowego"
+
+#: ports/stm/common-hal/alarm/pin/PinAlarm.c
+msgid "Deep sleep pins must use a rising edge with pulldown"
+msgstr ""
 
 #: shared-bindings/audiobusio/PDMIn.c
 msgid "Destination capacity is smaller than destination_length."
@@ -1683,6 +1687,10 @@ msgid ""
 "Only Windows format, uncompressed BMP supported: given header size is %d"
 msgstr "Wspierane są tylko nieskompresowane pliki BMP: wielkość nagłówka %d"
 
+#: ports/stm/common-hal/alarm/pin/PinAlarm.c
+msgid "Only edge detection is available on this hardware"
+msgstr ""
+
 #: shared-module/displayio/OnDiskBitmap.c
 #, c-format
 msgid ""
@@ -1696,6 +1704,7 @@ msgstr ""
 
 #: ports/esp32s2/common-hal/alarm/time/TimeAlarm.c
 #: ports/nrf/common-hal/alarm/time/TimeAlarm.c
+#: ports/stm/common-hal/alarm/time/TimeAlarm.c
 msgid "Only one alarm.time alarm can be set."
 msgstr ""
 
@@ -1771,6 +1780,10 @@ msgstr ""
 msgid "Permission denied"
 msgstr "Odmowa dostępu"
 
+#: ports/stm/common-hal/alarm/pin/PinAlarm.c
+msgid "Pin cannot wake from Deep Sleep"
+msgstr ""
+
 #: ports/raspberrypi/bindings/rp2pio/StateMachine.c
 msgid "Pin count must be at least 1"
 msgstr ""
@@ -1789,6 +1802,11 @@ msgstr ""
 msgid "Pin does not have ADC capabilities"
 msgstr "Nóżka nie obsługuje ADC"
 
+#: ports/stm/common-hal/alarm/pin/PinAlarm.c
+#: ports/stm/common-hal/pulseio/PulseIn.c
+msgid "Pin interrupt already in use"
+msgstr ""
+
 #: shared-bindings/adafruit_bus_device/SPIDevice.c
 #: shared-bindings/digitalio/DigitalInOut.c
 msgid "Pin is input only"
@@ -1801,10 +1819,6 @@ msgstr ""
 #: ports/atmel-samd/common-hal/countio/Counter.c
 msgid "Pin must support hardware interrupts"
 msgstr "Pin musi obsługiwać przerwania sprzętowe"
-
-#: ports/stm/common-hal/pulseio/PulseIn.c
-msgid "Pin number already reserved by EXTI"
-msgstr ""
 
 #: shared-bindings/rgbmatrix/RGBMatrix.c
 #, c-format
@@ -2026,6 +2040,10 @@ msgstr ""
 msgid "Size not supported"
 msgstr ""
 
+#: ports/stm/common-hal/alarm/SleepMemory.c
+msgid "Sleep Memory not available"
+msgstr ""
+
 #: shared-bindings/alarm/SleepMemory.c shared-bindings/nvm/ByteArray.c
 msgid "Slice and value different lengths."
 msgstr "Fragment i wartość są różnych długości."
@@ -2166,6 +2184,10 @@ msgstr "Zbyt wiele wyświetlaczy"
 msgid "Total data to write is larger than %q"
 msgstr ""
 
+#: ports/stm/common-hal/alarm/touch/TouchAlarm.c
+msgid "Touch alarms not available"
+msgstr ""
+
 #: py/obj.c
 msgid "Traceback (most recent call last):\n"
 msgstr "Ślad wyjątku (najnowsze wywołanie na końcu):\n"
@@ -2195,12 +2217,8 @@ msgid "UART write error"
 msgstr "Błąd zapisu UART"
 
 #: shared-module/usb_hid/Device.c
-msgid "USB Busy"
-msgstr "USB Zajęte"
-
-#: shared-module/usb_hid/Device.c
-msgid "USB Error"
-msgstr "Błąd USB"
+msgid "USB busy"
+msgstr ""
 
 #: supervisor/shared/safe_mode.c
 msgid "USB devices need more endpoints than are available."
@@ -2208,6 +2226,10 @@ msgstr ""
 
 #: supervisor/shared/safe_mode.c
 msgid "USB devices specify too many interface names."
+msgstr ""
+
+#: shared-module/usb_hid/Device.c
+msgid "USB error"
 msgstr ""
 
 #: shared-bindings/_bleio/UUID.c
@@ -3497,6 +3519,10 @@ msgstr "nazwa '%q' niezdefiniowana"
 msgid "name not defined"
 msgstr "nazwa niezdefiniowana"
 
+#: py/asmthumb.c
+msgid "native method too big"
+msgstr ""
+
 #: py/emitnative.c
 msgid "native yield"
 msgstr "natywny yield"
@@ -3536,6 +3562,10 @@ msgstr "brak wiązania dla zmiennej nielokalnej"
 
 #: shared-module/msgpack/__init__.c
 msgid "no default packer"
+msgstr ""
+
+#: extmod/modurandom.c
+msgid "no default seed"
 msgstr ""
 
 #: py/builtinimport.c
@@ -4108,6 +4138,10 @@ msgstr ""
 msgid "too many indices"
 msgstr "zbyt wiele indeksów"
 
+#: py/asmthumb.c
+msgid "too many locals for native method"
+msgstr ""
+
 #: py/runtime.c
 #, c-format
 msgid "too many values to unpack (expected %d)"
@@ -4340,6 +4374,12 @@ msgstr ""
 #: extmod/ulab/code/scipy/signal/signal.c
 msgid "zi must be of shape (n_section, 2)"
 msgstr ""
+
+#~ msgid "USB Busy"
+#~ msgstr "USB Zajęte"
+
+#~ msgid "USB Error"
+#~ msgstr "Błąd USB"
 
 #~ msgid "%q indices must be integers, not %q"
 #~ msgstr "%q indeksy muszą być liczbami typu int, a nie %q"
