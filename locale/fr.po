@@ -745,8 +745,8 @@ msgstr ""
 "mode sans échec.\n"
 
 #: supervisor/shared/safe_mode.c
-msgid "CircuitPython was unable to allocate the heap.\n"
-msgstr "CircuitPython n'as pu faire l'allocation de la pile.\n"
+msgid "CircuitPython was unable to allocate the heap."
+msgstr "CircuitPython n'as pu faire l'allocation de la pile."
 
 #: shared-module/bitbangio/SPI.c
 msgid "Clock pin init failed."
@@ -876,6 +876,10 @@ msgstr "Un bloc de données doit suivre un bloc fmt"
 #: ports/nrf/common-hal/_bleio/Adapter.c
 msgid "Data too large for advertisement packet"
 msgstr "Données trop volumineuses pour un paquet d'avertissement"
+
+#: ports/stm/common-hal/alarm/pin/PinAlarm.c
+msgid "Deep sleep pins must use a rising edge with pulldown"
+msgstr ""
 
 #: shared-bindings/audiobusio/PDMIn.c
 msgid "Destination capacity is smaller than destination_length."
@@ -1722,6 +1726,10 @@ msgstr ""
 "Seulement le format BMP Windows, non compressé est supporté : la taille de "
 "l'entête fournie est %d"
 
+#: ports/stm/common-hal/alarm/pin/PinAlarm.c
+msgid "Only edge detection is available on this hardware"
+msgstr ""
+
 #: shared-module/displayio/OnDiskBitmap.c
 #, c-format
 msgid ""
@@ -1737,6 +1745,7 @@ msgstr "Seulement une TouchAlarm peu être réglée en someil profond."
 
 #: ports/esp32s2/common-hal/alarm/time/TimeAlarm.c
 #: ports/nrf/common-hal/alarm/time/TimeAlarm.c
+#: ports/stm/common-hal/alarm/time/TimeAlarm.c
 msgid "Only one alarm.time alarm can be set."
 msgstr "Seulement une alarme alarm.time peut être réglée."
 
@@ -1816,6 +1825,10 @@ msgstr "Périphérique en utilisation"
 msgid "Permission denied"
 msgstr "Permission refusée"
 
+#: ports/stm/common-hal/alarm/pin/PinAlarm.c
+msgid "Pin cannot wake from Deep Sleep"
+msgstr ""
+
 #: ports/raspberrypi/bindings/rp2pio/StateMachine.c
 msgid "Pin count must be at least 1"
 msgstr "Nombre de broches doit être au moins 1"
@@ -1834,6 +1847,11 @@ msgstr "Nombre de broches trop élevé"
 msgid "Pin does not have ADC capabilities"
 msgstr "La broche 'pin' ne supporte pas les capacitées ADC"
 
+#: ports/stm/common-hal/alarm/pin/PinAlarm.c
+#: ports/stm/common-hal/pulseio/PulseIn.c
+msgid "Pin interrupt already in use"
+msgstr ""
+
 #: shared-bindings/adafruit_bus_device/SPIDevice.c
 #: shared-bindings/digitalio/DigitalInOut.c
 msgid "Pin is input only"
@@ -1846,10 +1864,6 @@ msgstr "La broche doit être sur le canal B du PWM"
 #: ports/atmel-samd/common-hal/countio/Counter.c
 msgid "Pin must support hardware interrupts"
 msgstr "La broche doit supporter les interruptions matérielles"
-
-#: ports/stm/common-hal/pulseio/PulseIn.c
-msgid "Pin number already reserved by EXTI"
-msgstr "Numéro de broche 'pin' déjà réservé par EXTI"
 
 #: shared-bindings/rgbmatrix/RGBMatrix.c
 #, c-format
@@ -2081,6 +2095,10 @@ msgstr "Nombre de broches Side configurées doit être entre 1 et 5"
 msgid "Size not supported"
 msgstr "Taille n'est pas supportée"
 
+#: ports/stm/common-hal/alarm/SleepMemory.c
+msgid "Sleep Memory not available"
+msgstr ""
+
 #: shared-bindings/alarm/SleepMemory.c shared-bindings/nvm/ByteArray.c
 msgid "Slice and value different lengths."
 msgstr "Tranche et valeur de tailles différentes."
@@ -2230,6 +2248,10 @@ msgstr "Trop d'affichages"
 msgid "Total data to write is larger than %q"
 msgstr "Quantité de données à écrire est plus que %q"
 
+#: ports/stm/common-hal/alarm/touch/TouchAlarm.c
+msgid "Touch alarms not available"
+msgstr ""
+
 #: py/obj.c
 msgid "Traceback (most recent call last):\n"
 msgstr "Traceback (appels les plus récents en dernier) :\n"
@@ -2259,12 +2281,8 @@ msgid "UART write error"
 msgstr "Erreur d'écriture UART"
 
 #: shared-module/usb_hid/Device.c
-msgid "USB Busy"
-msgstr "USB occupé"
-
-#: shared-module/usb_hid/Device.c
-msgid "USB Error"
-msgstr "Erreur USB"
+msgid "USB busy"
+msgstr ""
 
 #: supervisor/shared/safe_mode.c
 msgid "USB devices need more endpoints than are available."
@@ -2272,6 +2290,10 @@ msgstr ""
 
 #: supervisor/shared/safe_mode.c
 msgid "USB devices specify too many interface names."
+msgstr ""
+
+#: shared-module/usb_hid/Device.c
+msgid "USB error"
 msgstr ""
 
 #: shared-bindings/_bleio/UUID.c
@@ -3587,6 +3609,10 @@ msgstr "nom '%q' non défini"
 msgid "name not defined"
 msgstr "nom non défini"
 
+#: py/asmthumb.c
+msgid "native method too big"
+msgstr ""
+
 #: py/emitnative.c
 msgid "native yield"
 msgstr "'yield' natif"
@@ -3627,6 +3653,10 @@ msgstr "pas de lien trouvé pour nonlocal"
 #: shared-module/msgpack/__init__.c
 msgid "no default packer"
 msgstr "aucun emballeur par défault"
+
+#: extmod/modurandom.c
+msgid "no default seed"
+msgstr ""
 
 #: py/builtinimport.c
 msgid "no module named '%q'"
@@ -4204,6 +4234,10 @@ msgstr "Trop de dimensions"
 msgid "too many indices"
 msgstr "trop d'indices"
 
+#: py/asmthumb.c
+msgid "too many locals for native method"
+msgstr ""
+
 #: py/runtime.c
 #, c-format
 msgid "too many values to unpack (expected %d)"
@@ -4436,6 +4470,15 @@ msgstr "zi doit être de type float"
 #: extmod/ulab/code/scipy/signal/signal.c
 msgid "zi must be of shape (n_section, 2)"
 msgstr "zi doit être de forme (n_section, 2)"
+
+#~ msgid "Pin number already reserved by EXTI"
+#~ msgstr "Numéro de broche 'pin' déjà réservé par EXTI"
+
+#~ msgid "USB Busy"
+#~ msgstr "USB occupé"
+
+#~ msgid "USB Error"
+#~ msgstr "Erreur USB"
 
 #~ msgid "%q indices must be integers, not %q"
 #~ msgstr "indices %q doivent être des chiffres entier, et non %q"

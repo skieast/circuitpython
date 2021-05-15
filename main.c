@@ -261,18 +261,20 @@ STATIC void print_code_py_status_message(safe_mode_t safe_mode) {
         serial_write_compressed(translate("Auto-reload is off.\n"));
     }
     if (safe_mode != NO_SAFE_MODE) {
-        serial_write_compressed(translate("Running in safe mode! "));
-        serial_write_compressed(translate("Not running saved code.\n"));
+        serial_write_compressed(translate("Running in safe mode! Not running saved code.\n"));
     }
 }
 
 STATIC bool run_code_py(safe_mode_t safe_mode) {
     bool serial_connected_at_start = serial_connected();
+    bool printed_safe_mode_message = false;
     #if CIRCUITPY_AUTORELOAD_DELAY_MS > 0
-    serial_write("\n");
-    print_code_py_status_message(safe_mode);
-    print_safe_mode_message(safe_mode);
-    serial_write("\n");
+    if (serial_connected_at_start) {
+        serial_write("\r\n");
+        print_code_py_status_message(safe_mode);
+        print_safe_mode_message(safe_mode);
+        printed_safe_mode_message = true;
+    }
     #endif
 
     pyexec_result_t result;
@@ -297,13 +299,17 @@ STATIC bool run_code_py(safe_mode_t safe_mode) {
         stack_resize();
         filesystem_flush();
         supervisor_allocation* heap = allocate_remaining_memory();
+
+        // Prepare the VM state. Includes an alarm check/reset for sleep.
         start_mp(heap);
 
         #if CIRCUITPY_USB
         usb_setup_with_vm();
         #endif
 
+        // This is where the user's python code is actually executed:
         found_main = maybe_run_list(supported_filenames, &result);
+        // If that didn't work, double check the extensions
         #if CIRCUITPY_FULL_BUILD
         if (!found_main){
             found_main = maybe_run_list(double_extension_filenames, &result);
@@ -313,6 +319,7 @@ STATIC bool run_code_py(safe_mode_t safe_mode) {
         }
         #endif
 
+        // Finished executing python code. Cleanup includes a board reset.
         cleanup_after_vm(heap);
 
         if (result.return_code & PYEXEC_FORCED_EXIT) {
@@ -383,8 +390,11 @@ STATIC bool run_code_py(safe_mode_t safe_mode) {
                 print_code_py_status_message(safe_mode);
             }
 
-            print_safe_mode_message(safe_mode);
-            serial_write("\n");
+            if (!printed_safe_mode_message) {
+                print_safe_mode_message(safe_mode);
+                printed_safe_mode_message = true;
+            }
+            serial_write("\r\n");
             serial_write_compressed(translate("Press any key to enter the REPL. Use CTRL-D to reload.\n"));
             printed_press_any_key = true;
         }
@@ -521,7 +531,6 @@ STATIC void __attribute__ ((noinline)) run_boot_py(safe_mode_t safe_mode) {
     usb_set_defaults();
 #endif
 
-    // TODO(tannewt): Re-add support for flashing boot error output.
     if (ok_to_run) {
         bool found_boot = maybe_run_list(boot_py_filenames, NULL);
         (void) found_boot;

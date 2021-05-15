@@ -79,6 +79,8 @@ bool common_hal_alarm_woken_from_sleep(void) {
     return _get_wakeup_cause() != ESP_SLEEP_WAKEUP_UNDEFINED;
 }
 
+// When called to populate the global dict, the module functions create new alarm objects.
+// Otherwise, they scan the existing alarms for matches.
 STATIC mp_obj_t _get_wake_alarm(size_t n_alarms, const mp_obj_t *alarms) {
     esp_sleep_wakeup_cause_t cause = _get_wakeup_cause();
     switch (cause) {
@@ -104,6 +106,8 @@ STATIC mp_obj_t _get_wake_alarm(size_t n_alarms, const mp_obj_t *alarms) {
     return mp_const_none;
 }
 
+// This function is used to create a new alarm object for the global dict after deep sleep,
+// rather than finding an existing one during runtime.
 mp_obj_t common_hal_alarm_get_wake_alarm(void) {
     return _get_wake_alarm(0, NULL);
 }
@@ -121,6 +125,7 @@ STATIC void _idle_until_alarm(void) {
         RUN_BACKGROUND_TASKS;
         // Allow ctrl-C interrupt.
         if (common_hal_alarm_woken_from_sleep()) {
+            // This saves the return of common_hal_alarm_get_wake_alarm through Shared Bindings
             shared_alarm_save_wake_alarm();
             return;
         }
