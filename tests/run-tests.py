@@ -800,10 +800,7 @@ the last matching regex is used:
 
         sys.exit(0)
 
-    LOCAL_TARGETS = (
-        "unix",
-        "qemu-arm",
-    )
+    LOCAL_TARGETS = ("unix", "qemu-arm")
     EXTERNAL_TARGETS = ("pyboard", "wipy", "esp8266", "esp32", "minimal", "nrf")
     if args.target in LOCAL_TARGETS or args.list_tests:
         pyb = None
@@ -819,12 +816,7 @@ the last matching regex is used:
 
     if len(args.files) == 0:
         if args.test_dirs is None:
-            test_dirs = (
-                "basics",
-                "micropython",
-                "misc",
-                "extmod",
-            )
+            test_dirs = ("basics", "micropython", "misc", "extmod")
             if args.target == "pyboard":
                 # run pyboard tests
                 test_dirs += ("float", "stress", "pyb", "pybnative", "inlineasm")
@@ -850,11 +842,7 @@ the last matching regex is used:
                     raise ValueError("--target=qemu-arm must be used with --write-exp")
                 # Generate expected output files for qemu run.
                 # This list should match the test_dirs tuple in tinytest-codegen.py.
-                test_dirs += (
-                    "float",
-                    "inlineasm",
-                    "qemu-arm",
-                )
+                test_dirs += ("float", "inlineasm", "qemu-arm")
         else:
             # run tests from these directories
             test_dirs = args.test_dirs
