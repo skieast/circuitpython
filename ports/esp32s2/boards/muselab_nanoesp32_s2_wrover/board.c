@@ -3,7 +3,7 @@
  *
  * The MIT License (MIT)
  *
- * Copyright (c) 2020 microDev
+ * Copyright (c) 2020 Scott Shawcroft for Adafruit Industries
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,20 +24,29 @@
  * THE SOFTWARE.
  */
 
-#ifndef MICROPY_INCLUDED_ESP32S2_PERIPHERALS_TIMER_HANDLER_H
-#define MICROPY_INCLUDED_ESP32S2_PERIPHERALS_TIMER_HANDLER_H
+#include "supervisor/board.h"
+#include "mpconfigboard.h"
+#include "shared-bindings/microcontroller/Pin.h"
 
-#include "driver/timer.h"
+void board_init(void) {
+    // USB
+    common_hal_never_reset_pin(&pin_GPIO19);
+    common_hal_never_reset_pin(&pin_GPIO20);
 
-typedef struct {
-    timg_dev_t *hw;
-    timer_idx_t idx;
-    timer_group_t group;
-} timer_index_t;
+    // Debug UART
+    #ifdef DEBUG
+    common_hal_never_reset_pin(&pin_GPIO43);
+    common_hal_never_reset_pin(&pin_GPIO44);
+    #endif /* DEBUG */
+}
 
-extern bool peripherals_timer_init(const timer_config_t *config, timer_index_t *timer);
-extern void peripherals_timer_deinit(timer_index_t *timer);
-extern void peripherals_timer_reset(void);
-extern void peripherals_timer_never_reset(timer_index_t *timer);
+bool board_requests_safe_mode(void) {
+    return false;
+}
 
-#endif  // MICROPY_INCLUDED_ESP32S2_PERIPHERALS_TIMER_HANDLER_H
+void reset_board(void) {
+
+}
+
+void board_deinit(void) {
+}

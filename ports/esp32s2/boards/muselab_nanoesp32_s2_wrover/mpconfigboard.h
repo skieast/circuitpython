@@ -3,7 +3,7 @@
  *
  * The MIT License (MIT)
  *
- * Copyright (c) 2020 microDev
+ * Copyright (c) 2019 Scott Shawcroft for Adafruit Industries
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,20 +24,15 @@
  * THE SOFTWARE.
  */
 
-#ifndef MICROPY_INCLUDED_ESP32S2_PERIPHERALS_TIMER_HANDLER_H
-#define MICROPY_INCLUDED_ESP32S2_PERIPHERALS_TIMER_HANDLER_H
+// Micropython setup
 
-#include "driver/timer.h"
+#define MICROPY_HW_BOARD_NAME       "nanoESP32-S2  w/Wrover"
+#define MICROPY_HW_MCU_NAME         "ESP32S2"
 
-typedef struct {
-    timg_dev_t *hw;
-    timer_idx_t idx;
-    timer_group_t group;
-} timer_index_t;
+#define MICROPY_HW_NEOPIXEL (&pin_GPIO18)
 
-extern bool peripherals_timer_init(const timer_config_t *config, timer_index_t *timer);
-extern void peripherals_timer_deinit(timer_index_t *timer);
-extern void peripherals_timer_reset(void);
-extern void peripherals_timer_never_reset(timer_index_t *timer);
+#define CIRCUITPY_BOOT_BUTTON (&pin_GPIO0)
 
-#endif  // MICROPY_INCLUDED_ESP32S2_PERIPHERALS_TIMER_HANDLER_H
+#define BOARD_USER_SAFE_MODE_ACTION translate("pressing boot button at start up.\n")
+
+#define AUTORESET_DELAY_MS 500
