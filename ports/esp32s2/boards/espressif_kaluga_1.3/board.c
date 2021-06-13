@@ -3,7 +3,7 @@
  *
  * The MIT License (MIT)
  *
- * Copyright (c) 2021 Scott Shawcroft for Adafruit Industries
+ * Copyright (c) 2020 Scott Shawcroft for Adafruit Industries
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -25,12 +25,19 @@
  */
 
 #include "supervisor/board.h"
-
+#include "mpconfigboard.h"
 #include "shared-bindings/microcontroller/Pin.h"
-#include "src/rp2_common/hardware_gpio/include/hardware/gpio.h"
-#include "supervisor/shared/board.h"
 
 void board_init(void) {
+    // USB
+    common_hal_never_reset_pin(&pin_GPIO19);
+    common_hal_never_reset_pin(&pin_GPIO20);
+
+    // Debug UART
+    #ifdef DEBUG
+    common_hal_never_reset_pin(&pin_GPIO43);
+    common_hal_never_reset_pin(&pin_GPIO44);
+    #endif /* DEBUG */
 }
 
 bool board_requests_safe_mode(void) {
@@ -38,6 +45,8 @@ bool board_requests_safe_mode(void) {
 }
 
 void reset_board(void) {
-    // turn off any left over LED
-    board_reset_user_neopixels(&pin_GPIO19, 12);
+
+}
+
+void board_deinit(void) {
 }
