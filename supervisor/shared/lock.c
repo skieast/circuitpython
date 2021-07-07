@@ -3,7 +3,7 @@
  *
  * The MIT License (MIT)
  *
- * Copyright (c) 2017 Glenn Ruben Bakke
+ * Copyright (c) 2021 Dan Halbert for Adafruit Industries
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,17 +24,28 @@
  * THE SOFTWARE.
  */
 
-#ifndef MICROPY_INCLUDED_NRF_BLUETOOTH_BLE_UART_H
-#define MICROPY_INCLUDED_NRF_BLUETOOTH_BLE_UART_H
+#include "shared-bindings/microcontroller/__init__.h"
+#include "supervisor/shared/lock.h"
 
-#include <stdbool.h>
+void supervisor_acquire_lock(supervisor_lock_t *lock) {
+    while (!supervisor_try_lock(lock)) {
+        RUN_BACKGROUND_TASKS;
+    }
+}
 
-#include "ble_drv.h"
+bool supervisor_try_lock(supervisor_lock_t *lock) {
+    bool grabbed_lock = false;
+    common_hal_mcu_disable_interrupts();
+    if (!*lock) {
+        *lock = true;
+        grabbed_lock = true;
+    }
+    common_hal_mcu_enable_interrupts();
+    return grabbed_lock;
+}
 
-void ble_uart_init(void);
-bool ble_uart_connected(void);
-char ble_uart_rx_chr(void);
-bool ble_uart_stdin_any(void);
-void ble_uart_stdout_tx_str(const char *text);
-
-#endif // MICROPY_INCLUDED_NRF_BLUETOOTH_BLE_UART_H
+void supervisor_release_lock(supervisor_lock_t *lock) {
+    common_hal_mcu_disable_interrupts();
+    *lock = false;
+    common_hal_mcu_enable_interrupts();
+}

@@ -3,7 +3,7 @@
  *
  * The MIT License (MIT)
  *
- * Copyright (c) 2019 Scott Shawcroft for Adafruit Industries
+ * Copyright (c) 2021 Dan Halbert for Adafruit Industries
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,10 +24,17 @@
  * THE SOFTWARE.
  */
 
-#ifndef MICROPY_INCLUDED_SUPERVISOR_SHARED_BLUETOOTH_H
-#define MICROPY_INCLUDED_SUPERVISOR_SHARED_BLUETOOTH_H
+#ifndef MICROPY_INCLUDED_SHARED_BINDINGS_KEYPAD_EVENT__H
+#define MICROPY_INCLUDED_SHARED_BINDINGS_KEYPAD_EVENT__H
 
-void supervisor_bluetooth_background(void);
-void supervisor_start_bluetooth(void);
+#include "py/obj.h"
+#include "shared-module/keypad/Event.h"
 
-#endif // MICROPY_INCLUDED_SUPERVISOR_SHARED_BLUETOOTH_H
+extern const mp_obj_type_t keypad_event_type;
+
+void common_hal_keypad_event_construct(keypad_event_obj_t *self, mp_uint_t key_number, bool pressed);
+mp_int_t common_hal_keypad_event_get_key_number(keypad_event_obj_t *self);
+bool common_hal_keypad_event_get_pressed(keypad_event_obj_t *self);
+bool common_hal_keypad_event_get_released(keypad_event_obj_t *self);
+
+#endif // MICROPY_INCLUDED_SHARED_BINDINGS_KEYPAD_EVENT__H
